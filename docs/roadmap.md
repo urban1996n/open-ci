@@ -13,7 +13,7 @@ The document should be divided into x sections describing basic assumptions, req
 6. The following roadmap/milestones are not final and will be updated after making progress in the project completion (especially after finishing researches described in the milestones).
 
 ### Roadmap/Milestones for CI system introduction.
-1. Create specific communication graph of the CI system communication and processes.
+1. Create specific architecture graph of the CI system communication and processes.
 2. Specify communication protocols and abstract communication layers
 3. Specify technologies and libraries to be used for CI system implementation.
 4. Write down specific implementation steps to be treated as another milestones.
