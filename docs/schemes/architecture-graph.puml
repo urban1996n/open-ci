@@ -1,0 +1,145 @@
+@startuml ci-cd-system-architecture-scheme
+
+title CI/CD system architecture scheme
+
+frame HttpPipelineTriggers as "HTTP Pipeline triggers" {
+  agent gitPush as "Git push"
+  agent defaultBranchMerge as "Merging another branch to the default branch"
+  agent httpRequest as "Http request to pipeline add / retry endpoint"
+}
+
+frame AMQPProxy as "AMQP / MQTT Proxy server" {
+
+}
+
+frame CiCDSystem as "CI/CD System"{
+    port http as "http"
+
+    component TriggerListener as "Pipeline triggers listeners" {
+        component HttpTriggerListener
+        component HttpTriggerMessenger {
+            card RequestMessage
+        }
+    }
+
+    component RunnersRegistry  as "Runners registry" {
+        component RunnerConsumer as "Runner broker" {
+            agent RequestExecution
+        }
+
+        component RunnerProducer as "Runner messenger" {
+            card ExecutionEnded
+        }
+
+        component RunnersManager as "Runners manager" {
+            collections Runners as "Runners collections"
+            queue RunnersQueue as "RunnersQueue"
+
+            card RegisterRunner
+            card DeleteRunner
+            card VerifyRunner
+        }
+
+        component Runner {
+            card ExecuteJob
+        }
+
+        component RunnerQueueProcessor as "Runners processor" {
+
+        }
+    }
+
+    component JobsRegistry as "Jobs registry" {
+        component  JobConsumer as "Jobs broker" {
+            agent JobRequestListener
+            agent JobCancellationListener
+        }
+
+        component JobProducer as "Jobs messenger" {
+            card MarkJobFished
+            card MarkJobFailed
+        }
+
+        component Job {
+            card PrePipelineExecution
+            card ExecutePipeline
+            card PostPipelineExecution
+        }
+
+        component JobManager {
+            collections Jobs as "Jobs collection"
+            queue JobsQueue as "Jobs queue"
+
+            card JobRequest
+            card JobUpdate
+            card CancelJob
+        }
+    }
+
+    component PipelinesRegistry as "Pipelines registry" {
+        component  PipelineConsumer as "Pipeline broker" {
+            agent PipelineRegistrationListener
+            agent PipelineRetryListener
+            agent PipelineCancellationListener
+        }
+
+        component PipelineMessenger as "Pipeline messenger" {
+            card PipelineFinished
+            card PipelineFailed
+        }
+
+        component PipelineManager as "Pipelines manager" {
+            card RegisterPipeline
+            card RetryPipeline
+            card CancelPipeline
+            collections Pipelines as "Pipelines collection"
+            queue PipelineQueue as "Pipelines queue"
+        }
+    }
+
+    database Database as "CI/CD System database" {
+        entity pipeline
+        entity runner
+        entity job
+        entity configuration
+    }
+}
+
+gitPush -> http: Http request
+defaultBranchMerge -> http: Http request
+httpRequest -> http: Http request
+
+http->>HttpTriggerListener: HTTP request
+HttpTriggerListener->HttpTriggerMessenger: Signal of trigger
+HttpTriggerMessenger->>AMQPProxy: Send message to register pipeline
+AMQPProxy->>PipelineRegistrationListener: Register pipeline
+PipelineRegistrationListener->>RegisterPipeline
+RegisterPipeline.>pipeline
+RegisterPipeline.>Pipelines
+Pipelines.>PipelineQueue
+
+job .. pipeline: 1 : n
+runner .. job: n:n
+AMQPProxy->>JobRequestListener: Requests for job to be run with specific pipeline ID
+JobRequestListener.>job: Creates a job with specific pipeline idx
+
+legend
+**Naming:**
+Runner - Single executor to run a job and trigger registry changes.
+Job - Single job with pipeline execution and eg. logs processing.
+Pipeline - Instructions steps to be executed within a single job
+Broker - AMQP consumer - receiving data from AMQP message channel
+Messenger - AMQP producer - sending data to AMQP message channel
+
+**Hierarchy awareness note**:
+To specify awareness for each domain we can specify their hierarchy:
+1. Runner
+2. Job
+3. Pipeline
+
+Each of domains will be aware of one domain member lower in the hierarchy tree, so:
+1. **Runner** is only aware of job it's going to execute
+2. **Job** is aware of pipeline which will be a part of the execution.
+3. **Pipeline** is not aware of any other domain.
+endlegend
+@enduml
