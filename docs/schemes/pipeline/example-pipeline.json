@@ -1,0 +1,62 @@
+{
+  /** Environment object's variables will have lifetime of whole build */
+  "environment": [
+    {
+      "name": "db_password",
+      "value": "****"
+    },
+    {
+      "name": "db_user",
+      "value": "****"
+    }
+  ],
+  "preBuild": {
+    "scripts": [
+      {
+        /**
+           script's object context attribute determines where the particular binary should be looked for in
+           the reason to break those into 3 separate properties is that the runner script will look first for a context existence,
+           then for existence of binary file.
+         */
+        "context": "/bin/sh",
+        "binary": "sh",
+        "command": "deploy.sh --(...args)"
+      },
+      {
+        "context": "/bin/composer",
+        "binary": "composer",
+        "command": "install"
+      }
+    ]
+  },
+  "build": {
+    "stages": [
+      {
+        /**
+            env_vars object's environment variables will have a lifetime of a single stage,
+            variables within single step are not allowed.
+         */
+        "env_vars": [
+          {
+            "name": {
+              "timezone": "America/Los_Angeles"
+            }
+          }
+        ],
+        "name": "unit tests",
+        "steps": [
+          {
+            "name": "phpunit tests",
+            "scripts": [
+              {
+                "context": "./",
+                "binary": "phpunit",
+                "command": "-capp --strict-coverage"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
