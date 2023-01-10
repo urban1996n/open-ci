@@ -21,7 +21,7 @@
         "scripts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/script",
+            "$ref": "#/$defs/script"
           },
           "minItems": 1
         }
@@ -36,7 +36,7 @@
         "stages": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/stage",
+            "$ref": "#/$defs/stage"
           },
           "minItems": 1
         }
@@ -91,7 +91,7 @@
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/step",
+            "$ref": "#/$defs/step"
           },
           "minItems": 1
         }
@@ -108,7 +108,7 @@
         "scripts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/script",
+            "$ref": "#/$defs/script"
           },
           "minItems": 1
         }
