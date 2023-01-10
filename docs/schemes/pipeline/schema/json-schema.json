@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/product.schema.json",
+  "title": "Pipeline",
+  "description": "A pipeline to be executed",
+  "type": "object",
+  "properties": {
+    "environment": {
+      "description": "Environmental variables to be used within whole lifetime of a pipeline",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/env"
+      }
+    },
+    "preBuild": {
+      "description": "Instructions to be executed before actual pipeline build is being run",
+      "type": "object",
+      "properties": {
+        "scripts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/script",
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["scripts"],
+      "additionalProperties": false
+    },
+    "build": {
+      "description": "The actual build instructions described in stages and steps",
+      "type": "object",
+      "properties": {
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stage",
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["stages"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["build"],
+  "$defs": {
+    "env": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "value"],
+      "additionalProperties": false
+    },
+    "script": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string"
+        },
+        "binary": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        }
+      },
+      "required": ["context", "binary", "command"],
+      "additionalProperties": false
+    },
+    "stage": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "env_vars": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/env"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/step",
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["steps", "name", "env_vars"],
+      "additionalProperties": false
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "scripts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/script",
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["scripts", "name"],
+      "additionalProperties": false
+    }
+  }
+}
