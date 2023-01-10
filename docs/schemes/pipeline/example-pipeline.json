@@ -1,4 +1,5 @@
 {
+  "$schema": "schema/json-schema.json",
   "environment": [
     {
       "name": "db_password",
