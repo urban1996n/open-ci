@@ -3,6 +3,10 @@
   "description": "A pipeline to be executed",
   "type": "object",
   "properties": {
+    "$schema": {
+      "type": "string",
+      "enum": [ "schema/json-schema.json" ]
+    },
     "environment": {
       "description": "Environmental variables to be used within whole lifetime of a pipeline",
       "type": "array",
@@ -41,7 +45,7 @@
       "additionalProperties": false
     }
   },
-  "required": ["build"],
+  "required": ["build", "$schema"],
   "$defs": {
     "env": {
       "type": "object",
