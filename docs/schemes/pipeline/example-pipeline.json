@@ -13,11 +13,6 @@
   "preBuild": {
     "scripts": [
       {
-        "context": "/bin/sh",
-        "binary": "sh",
-        "command": "deploy.sh --(...args)"
-      },
-      {
         "context": "/bin/composer",
         "binary": "composer",
         "command": "install"
