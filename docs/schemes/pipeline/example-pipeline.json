@@ -1,0 +1,52 @@
+{
+  "$schema": "schema/json-schema.json",
+  "environment": [
+    {
+      "name": "db_password",
+      "value": "****"
+    },
+    {
+      "name": "db_user",
+      "value": "****"
+    }
+  ],
+  "preBuild": {
+    "scripts": [
+      {
+        "context": "/bin/sh",
+        "binary": "sh",
+        "command": "deploy.sh --(...args)"
+      },
+      {
+        "context": "/bin/composer",
+        "binary": "composer",
+        "command": "install"
+      }
+    ]
+  },
+  "build": {
+    "stages": [
+      {
+        "env_vars": [
+          {
+            "name":"timezone",
+            "value": "America/Los_Angeles"
+          }
+        ] ,
+        "name": "unit tests",
+        "steps": [
+          {
+            "name": "phpunit tests",
+            "scripts": [
+              {
+                "context": "./",
+                "binary": "phpunit",
+                "command": "-capp --strict-coverage"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
