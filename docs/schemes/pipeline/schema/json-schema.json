@@ -5,7 +5,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "enum": [ "schema/json-schema.json", "https://raw.githubusercontent.com/wkluz/ci-cd-system/173760351843de6e23948f96ba01d9c8d9e161e0/docs/schemes/pipeline/schema/json-schema.json" ]
+      "enum": [ "schema/json-schema.json", "https://raw.githubusercontent.com/wkluz/ci-cd-system/main/docs/schemes/pipeline/schema/json-schema.json" ]
     },
     "environment": {
       "description": "Environmental variables to be used within whole lifetime of a pipeline",
