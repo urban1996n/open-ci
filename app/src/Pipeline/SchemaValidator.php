@@ -22,7 +22,7 @@ class SchemaValidator
             throw new MissingEnvVariableException($envVar);
         }
 
-        $this->pipelinePath = $pipelinePath;
+        $this->pipelinePath = __DIR__ . '/' . $pipelinePath;
     }
 
     public function validate(): void
