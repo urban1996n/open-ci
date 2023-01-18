@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand('dupa')]
+#[AsCommand('pipeline:run-single')]
 class RunPipelineCommand extends Command
 {
     private PipelineFactory $factory;
