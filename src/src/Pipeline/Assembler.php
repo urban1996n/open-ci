@@ -9,7 +9,7 @@ use App\Pipeline\Component\Script;
 use App\Pipeline\Component\Stage;
 use App\Pipeline\Component\Step;
 
-class PipelineAssembler
+class Assembler
 {
     public function assemble(array $initializer): Pipeline
     {
