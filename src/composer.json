@@ -22,14 +22,13 @@
         "symfony/console": "6.2.*",
         "symfony/dependency-injection": "6.2.*",
         "symfony/dotenv": "6.2.*",
-        "symfony/flex": "^2",
         "symfony/runtime": "6.2.*",
         "symfony/yaml": "6.2.*"
     },
     "config": {
         "allow-plugins": {
-            "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "symfony/flex": false
         },
         "sort-packages": true
     },
