@@ -16,9 +16,10 @@ class Runtime
     private function buildContainer(): void
     {
         $container = $this->container = new DI\ContainerBuilder();
+        $container->setParameter('application.root_dir', \Application::getRootDirectory());
+        $container->addCompilerPass(new CustomDI\ApplicationCompilerPass());
         $container->registerExtension($extension = new CustomDI\ApplicationExtension());
         $container->loadFromExtension($extension->getAlias());
-        $container->addCompilerPass(new CustomDI\ApplicationCompilerPass());
 
         $container->compile(true);
     }
