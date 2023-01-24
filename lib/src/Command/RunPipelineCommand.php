@@ -22,7 +22,7 @@ class RunPipelineCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $job = new Job('asjjfwyaa8');
+        $job = new Job('test-pipeline-branch', 'abc12456');
 
         $this->pipelineExecutor->execute($job);
 
