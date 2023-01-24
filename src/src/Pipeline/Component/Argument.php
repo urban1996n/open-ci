@@ -14,6 +14,11 @@ class Argument
         $this->value = $value;
     }
 
+    public function __toString(): string
+    {
+        return $this->name . ' ' . $this->value;
+    }
+
     public static function fromArray($initializer): Argument
     {
         $name  = $initializer['name'];
