@@ -11,7 +11,11 @@ class Script
     private string $command;
 
     /** @var  Argument[] */
-    private array $args;
+    private array $args = [];
+
+    private bool $finished = false;
+
+    private ?bool $successful = null;
 
     public function __construct(string $context, string $binary, string $command)
     {
@@ -52,5 +56,25 @@ class Script
         $command = $initializer['command'];
 
         return new self($context, $binary, $command);
+    }
+
+    public function setFinished(bool $finished): void
+    {
+        $this->finished = $finished;
+    }
+
+    public function setSuccessful(?bool $successful): void
+    {
+        $this->successful = $successful;
+    }
+
+    public function getSuccessful(): ?bool
+    {
+        return $this->successful;
+    }
+
+    public function isFinished(): bool
+    {
+        return $this->finished;
     }
 }
