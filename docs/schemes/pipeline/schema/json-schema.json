@@ -54,7 +54,7 @@
           "type": "string"
         },
         "value": {
-          "type": "string"
+          "type": ["string", "number", "null"]
         }
       },
       "required": ["name", "value"],
@@ -64,13 +64,22 @@
       "type": "object",
       "properties": {
         "context": {
-          "type": "string"
+          "type": "string",
+          "description": "context of the binary file, directory"
         },
         "binary": {
-          "type": "string"
+          "type": "string",
+          "description": "binary file to be executed"
         },
         "command": {
-          "type": "string"
+          "type": "string",
+          "description": "command to be executed"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/arg"
+          }
         }
       },
       "required": ["context", "binary", "command"],
@@ -115,6 +124,20 @@
       },
       "required": ["scripts", "name"],
       "additionalProperties": false
+    },
+    "arg": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": ["string"],
+          "description": "argument name, use with `--|-` if required"
+        },
+        "value": {
+          "type": ["string", "number"],
+          "description": "if no value is specified argument will be used without it. eg --help"
+        }
+      },
+      "required": ["name"]
     }
   }
 }

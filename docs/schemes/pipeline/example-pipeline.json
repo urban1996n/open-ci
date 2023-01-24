@@ -13,14 +13,14 @@
   "preBuild": {
     "scripts": [
       {
-        "context": "/bin/sh",
-        "binary": "sh",
-        "command": "deploy.sh --(...args)"
+        "context": "",
+        "binary": "ls",
+        "command": "-la"
       },
       {
-        "context": "/bin/composer",
-        "binary": "composer",
-        "command": "install"
+        "binary": "/opt/homebrew/bin/php",
+        "context": "/Users/kramsoft/workspace/pr/ci-cd-system",
+        "command": "pipeline-test.php"
       }
     ]
   },

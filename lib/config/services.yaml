@@ -1,0 +1,41 @@
+services:
+  _defaults:
+    autowire: false
+    autoconfigure: false
+    public: false
+    bind:
+      $rootDir: '%application.root_dir%'
+
+  pipeline_assembler:
+    class: App\Pipeline\Assembler
+
+  pipeline_schema_validator:
+    class: App\Pipeline\SchemaValidator
+    arguments: ['%env(SCHEMA_URL)%']
+
+  pipeline_factory:
+    class: App\Pipeline\PipelineFactory
+    arguments: ['@pipeline_schema_validator', '@pipeline_assembler', '%env(PIPELINE_PATH)%']
+
+  script_runner:
+    class: App\Job\ScriptRunner
+    calls:
+      - [setLogger, ['@Psr\Log\LoggerInterface']]
+
+  pipeline_executor:
+    class: App\Job\PipelineExecutor
+    arguments: ['@pipeline_factory', '@script_runner']
+
+  pipeline_command:
+    class: App\Command\RunPipelineCommand
+    calls:
+      - [setUpFactory, ['@pipeline_executor']]
+
+  Application:
+    class: Application
+    arguments: [['@pipeline_command']]
+    public: true
+
+  App\Common\Logger:
+
+  Psr\Log\LoggerInterface: '@App\Common\Logger'
