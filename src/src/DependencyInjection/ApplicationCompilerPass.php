@@ -9,6 +9,6 @@ class ApplicationCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        // TODO: Implement process() method.
+
     }
 }
