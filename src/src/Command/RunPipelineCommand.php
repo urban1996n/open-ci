@@ -2,7 +2,8 @@
 
 namespace App\Command;
 
-use App\Pipeline\PipelineFactory;
+use App\Job\Data\Job;
+use App\Job\PipelineExecutor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,17 +12,20 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand('pipeline:run-single')]
 class RunPipelineCommand extends Command
 {
-    private PipelineFactory $factory;
+    private PipelineExecutor $pipelineExecutor;
 
     /** @required */
-    public function setUpFactory(PipelineFactory $factory): void
+    public function setUpFactory(PipelineExecutor $executor): void
     {
-        $this->factory = $factory;
+        $this->pipelineExecutor = $executor;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        var_dump($this->factory->create());
+        $job = new Job('asjjfwyaa8');
+
+        $this->pipelineExecutor->execute($job);
+
         return 0;
     }
 }
