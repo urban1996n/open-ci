@@ -13,9 +13,14 @@
   "preBuild": {
     "scripts": [
       {
-        "context": "/bin/composer",
-        "binary": "composer",
-        "command": "install"
+        "context": "",
+        "binary": "ls",
+        "command": "-la"
+      },
+      {
+        "binary": "/opt/homebrew/bin/php",
+        "context": "/Users/kramsoft/workspace/pr/ci-cd-system",
+        "command": "index.php"
       }
     ]
   },
