@@ -12,11 +12,15 @@ class PipelineFactory
 
     private string $pipelinePath;
 
-    public function __construct(SchemaValidator $validator, Assembler $pipelineAssembler, string $pipelinePath)
-    {
+    public function __construct(
+        SchemaValidator $validator,
+        Assembler $pipelineAssembler,
+        string $pipelinePath,
+        string $rootDir
+    ) {
         $this->pipelineAssembler = $pipelineAssembler;
         $this->validator         = $validator;
-        $this->pipelinePath      = $pipelinePath;
+        $this->pipelinePath      = $rootDir . '/' . $pipelinePath;
     }
 
     /** @throws PipelineException */
