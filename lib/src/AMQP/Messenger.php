@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Common;
+namespace App\AMQP;
 
 use PhpAmqpLib\Message\AMQPMessage;
 
 abstract class Messenger
 {
-    private Connection $connection;
-
-    public function __construct()
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = new Connection();
     }
 
     public function send(int $queueType): void

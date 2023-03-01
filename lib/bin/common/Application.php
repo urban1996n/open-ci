@@ -17,6 +17,6 @@ class Application extends BaseApplication
 
     public static function getRootDirectory(): string
     {
-        return \dirname(__DIR__);
+        return \dirname(__DIR__ . '/../../../');
     }
 }

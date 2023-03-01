@@ -7,7 +7,7 @@ class Runtime
 {
     private DI\ContainerInterface $container;
 
-    public function loadAndRun(): void
+    public function buildAndRun(): void
     {
         $this->buildContainer();
         $this->run();
@@ -17,7 +17,7 @@ class Runtime
     {
         $container = $this->container = new DI\ContainerBuilder();
         $container->setParameter('application.root_dir', \Application::getRootDirectory());
-        $container->addCompilerPass(new CustomDI\ApplicationCompilerPass());
+        $container->addCompilerPass(new CustomDI\DoctrineCompilerPass());
         $container->registerExtension($extension = new CustomDI\ApplicationExtension());
         $container->loadFromExtension($extension->getAlias());
 

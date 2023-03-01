@@ -2,29 +2,72 @@
 
 namespace App\Command;
 
-use App\Job\Data\Job;
-use App\Job\PipelineExecutor;
+use App\AMQP\Connection;
+use App\Job\Executor;
+use PhpAmqpLib\Message\AMQPMessage;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand('pipeline:run-single')]
 class RunPipelineCommand extends Command
 {
-    private PipelineExecutor $pipelineExecutor;
+    private Executor $pipelineExecutor;
+
+    private Connection $connection;
 
     /** @required */
-    public function setUpFactory(PipelineExecutor $executor): void
+    public function setUpFactory(Executor $executor, Connection $connection): void
     {
+        $this->connection       = $connection;
         $this->pipelineExecutor = $executor;
+    }
+
+    protected function configure()
+    {
+        parent::configure();
+        $this->addOption('msg', 'm', InputArgument::OPTIONAL);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $job = new Job('test-pipeline-branch', 'abc12456');
+        $channel = $this->connection->getCurrentChannel();
 
-        $this->pipelineExecutor->execute($job);
+        $channel->queue_declare('hello', false, false, false, false);
+        while ($channel->is_open()) {
+            if ($input->getOption('msg')) {
+                $context = [
+                    'commit'       => 'asdasdads',
+                    'callback_url' => 'https://github.com/dupa/asdasd',
+                ];
+
+                $message = new AMQPMessage(\json_encode($context));
+                $this->connection->getCurrentChannel()->basic_publish($message, '', 'hello');
+                $this->connection->getCurrentChannel()->close();
+                $this->connection->close();
+            } else {
+                var_dump('asd');
+                $callback = function (AMQPMessage $msg) {
+                    echo " [x] Done\n";
+                };
+
+                $this->connection->getCurrentChannel()->basic_consume(
+                    'hello',
+                    '',
+                    false,
+                    true,
+                    false,
+                    false,
+                    $callback
+                );
+
+                while ($this->connection->getCurrentChannel()->is_open()) {
+                    $this->connection->getCurrentChannel()->wait();
+                }
+            }
+        }
 
         return 0;
     }

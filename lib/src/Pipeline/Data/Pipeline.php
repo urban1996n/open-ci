@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Pipeline;
+namespace App\Pipeline\Data;
 
-use App\Pipeline\Component;
+use App\Pipeline\Data\Component;
 
 class Pipeline
 {

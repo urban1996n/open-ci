@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Common;
+namespace App\AMQP;
 
 use PhpAmqpLib\Channel\AMQPChannel;
 
@@ -18,5 +18,10 @@ abstract class AbstractQueue
     public function open(): void
     {
         $this->channel->queue_declare($this->getName());
+    }
+
+    public function close(): void
+    {
+
     }
 }

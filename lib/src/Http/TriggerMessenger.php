@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use App\Common\Connection;
+use App\AMQP\Connection;
 
 class TriggerMessenger
 {

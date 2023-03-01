@@ -14,7 +14,7 @@ class ApplicationExtension implements ExtensionInterface
 
     public function __construct()
     {
-        $this->fileLocator = new FileLocator(__DIR__ . '/../../config');
+        $this->fileLocator = new FileLocator(\Application::getRootDirectory() . '/config');
     }
 
     public function getAlias()

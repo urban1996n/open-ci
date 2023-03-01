@@ -1,7 +1,7 @@
 services:
   _defaults:
-    autowire: false
-    autoconfigure: false
+    autowire: true
+    autoconfigure: true
     public: false
     bind:
       $rootDir: '%application.root_dir%'
@@ -36,6 +36,6 @@ services:
     arguments: [['@pipeline_command']]
     public: true
 
-  App\Common\Logger:
-
-  Psr\Log\LoggerInterface: '@App\Common\Logger'
+  App\Common\Connection:
+    class: App\Common\Connection
+    arguments: ['%env(AMQP_HOST)%', '%env(AMQP_PORT)%', '%env(AMQP_USER)%', '%env(AMQP_PASSWORD)%']

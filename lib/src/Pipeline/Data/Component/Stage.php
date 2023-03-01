@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Pipeline\Component;
+namespace App\Pipeline\Data\Component;
 
 class Stage
 {

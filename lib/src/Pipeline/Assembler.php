@@ -2,18 +2,19 @@
 
 namespace App\Pipeline;
 
-use App\Pipeline\Component\Argument;
-use App\Pipeline\Component\Environment;
-use App\Pipeline\Component\EnvVar;
-use App\Pipeline\Component\Script;
-use App\Pipeline\Component\Stage;
-use App\Pipeline\Component\Step;
+use App\Pipeline\Data\Component\Argument;
+use App\Pipeline\Data\Component\Environment;
+use App\Pipeline\Data\Component\EnvVar;
+use App\Pipeline\Data\Component\Script;
+use App\Pipeline\Data\Component\Stage;
+use App\Pipeline\Data\Component\Step;
+use App\Pipeline\Data\Pipeline;
 
 class Assembler
 {
     public function assemble(array $initializer): Pipeline
     {
-        $pipeline    = new Pipeline();
+        $pipeline            = new Pipeline();
         $pipelineEnvironment = new Environment();
 
         foreach ($initializer['environment'] as $envVar) {

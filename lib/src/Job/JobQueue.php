@@ -2,7 +2,7 @@
 
 namespace App\Job;
 
-use App\Common\AbstractQueue;
+use App\AMQP\AbstractQueue;
 
 class JobQueue extends AbstractQueue
 {
