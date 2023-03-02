@@ -19,23 +19,33 @@ services:
 
   script_runner:
     class: App\Job\ScriptRunner
-    calls:
-      - [setLogger, ['@Psr\Log\LoggerInterface']]
 
   pipeline_executor:
-    class: App\Job\PipelineExecutor
+    class: App\Job\Executor
     arguments: ['@pipeline_factory', '@script_runner']
+
+  amqp_connection:
+    class: App\AMQP\Connection
+    arguments: ['%env(AMQP_HOST)%', '%env(AMQP_PORT)%', '%env(AMQP_USER)%', '%env(AMQP_PASSWORD)%']
+
+  logger_factory:
+    class: App\Job\Logger\LoggerFactory
+
+  runner_factory:
+    class: App\Runner\Factory
+    arguments: ['@pipeline_executor', '@logger_factory']
+
+  runner_registry:
+    class: App\Runner\Registry
+    arguments: ['@runner_factory']
 
   pipeline_command:
     class: App\Command\RunPipelineCommand
     calls:
-      - [setUpFactory, ['@pipeline_executor']]
+      - [setUpFactory, ['@runner_registry']]
 
   Application:
     class: Application
     arguments: [['@pipeline_command']]
     public: true
 
-  App\Common\Connection:
-    class: App\Common\Connection
-    arguments: ['%env(AMQP_HOST)%', '%env(AMQP_PORT)%', '%env(AMQP_USER)%', '%env(AMQP_PASSWORD)%']
