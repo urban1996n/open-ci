@@ -1,0 +1,4 @@
+parameters:
+  github_api_token: "%env(GITHUB_API_TOKEN)%"
+  github_owner: "%env(GITHUB_OWNER)%"
+  github_repository: "%env(GITHUB_REPOSITORY)%"

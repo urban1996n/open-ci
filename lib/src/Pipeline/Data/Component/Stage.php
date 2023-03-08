@@ -44,8 +44,7 @@ class Stage
     public static function fromArray(array $initializer): Stage
     {
         $name = $initializer['name'];
-        $env  = $initializer['env_vars'];
 
-        return new self($name, $env);
+        return new self($name);
     }
 }

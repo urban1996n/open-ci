@@ -2,7 +2,7 @@
 
 namespace App\Job;
 
-use App\Job\Logger\Logger;
+use App\Common\Status;
 use App\Pipeline\Data\Component\Script;
 use Monolog\Level;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -20,50 +20,55 @@ class ScriptRunner
 
     private bool $running = false;
 
-    public function __construct(private readonly Logger $logger)
+    private ?\Closure $logger = null;
+
+    public function __construct()
     {
         $this->output = new ConsoleOutput();
     }
 
-    public function run(Script $script, array $env): void
+    /** @param \Closure<int, string> */
+    public function run(Script $script, array $env, \Closure $logger): void
     {
-        $command = $this->buildProcessFromScript($script);
+        $this->logger = $logger;
+        $command      = $this->buildProcessFromScript($script);
         $command->setTimeout(self::TIMEOUT);
 
         try {
             $command->mustRun($this->onScriptOutputCallback($script), $env);
         } catch (ProcessFailedException|ProcessTimedOutException|ProcessSignaledException $processFailedException) {
-            $this->logger->error($processFailedException->getMessage());
-            $script->setSuccessful(false);
+            $this->logger->call($this, 'error', $processFailedException->getMessage());
+            $script->setStatus(Status::Failure);
             $script->setFinished(true);
         }
 
-        while ($command->isRunning() && $script->getSuccessful() === null) {
+        while ($command->isRunning() && $script->getStatus() === null) {
             $this->running = true;
+            $script->setStatus(Status::Pending);
             $script->setFinished(false);
         }
 
         $script->setFinished(true);
 
-        $script->setSuccessful($script->getSuccessful() !== false && $command->isSuccessful());
+        if (!$script->getStatus()) {
+            $script->setStatus($command->isSuccessful() ? Status::Success : Status::Failure);
+        }
 
         $this->running = false;
     }
 
     private function onScriptOutputCallback(Script $script): \Closure
     {
-        dump('eee');
         return function (string $type, string $line) use ($script): void {
             $this->output->writeln($this->composeMessage($type, $line));
 
             if ($type === Process::ERR) {
-                $script->setSuccessful(false);
+                $script->setStatus(Status::Failure);
             }
 
-            $this->logger->log(
-                $type === Process::ERR ? Level::Error : Level::Info,
-                $line
-            );
+            $type = $type === Process::ERR ? Level::Error : Level::Info;
+
+            $this->logger->call($this, $type->toPsrLogLevel(), $line);
         };
     }
 

@@ -15,10 +15,9 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
     protected function getRequestBody(?object $subject): array
     {
         return [
-            'state'       => 'pending',
-            'target_url'  => 'https://example.com/build/status',
+            'target_url' => 'https://example.com/build/status',
             'description' => 'Building your commit!',
-            'context'     => 'continuous-integration/ci-cd',
+            'context' => 'continuous-integration/ci-cd',
         ];
     }
 
@@ -30,7 +29,11 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
 
         return \strtr(
             'repos/{owner}/{repo}/statuses/{sha}',
-            ['{owner}' => $this->owner, '{repo}' => $this->repository, '{sha}' => $subject->getCurrentCommit()]
+            [
+                '{owner}' => $this->githubOwner,
+                '{repo}'  => $this->githubRepository,
+                '{sha}'   => $subject->getCurrentCommit(),
+            ]
         );
     }
 }

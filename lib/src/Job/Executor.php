@@ -15,35 +15,23 @@ class Executor
 {
     private ?Pipeline $pipeline = null;
 
-    private \Closure $populateEnvironment;
-
     private Status $status = Status::Pending;
+
+    private ?\Closure $logger = null;
 
     public function __construct(private readonly PipelineFactory $factory, private readonly ScriptRunner $scriptRunner)
     {
-        $this->populateEnvironment = function (?Environment $environment) {
-            if (!$environment) {
-                return [];
-            }
-
-            $vars = [];
-            foreach ($environment->getVariables() as $varName => $varValue) {
-                $vars[$varName] = $varValue;
-            }
-
-            return $vars;
-        };
     }
 
-    public function execute(): void
+    public function execute(\Closure $logger): void
     {
         $this->pipeline = $this->factory->create();
-
+        $this->logger   = $logger;
         $this->loadEnv();
         $this->executePreBuildScripts();
         $this->executeBuild();
 
-        if ($this->status === Status::Pending) {
+        if ($this->status === Status::InProgress) {
             $this->status = Status::Success;
         }
     }
@@ -56,11 +44,13 @@ class Executor
     private function loadEnv(): void
     {
         $dotEnv = new Dotenv();
-        $dotEnv->populate($this->populateEnvironment->call($this, $this->pipeline->getEnvironment()));
+        $dotEnv->populate($this->pipeline->getEnvironment()->toArray());
     }
 
     private function executePreBuildScripts(): void
     {
+        $this->status = Status::InProgress;
+
         foreach ($this->pipeline->getPrebuildScripts() as $prebuildScript) {
             while ($this->shouldExecute($prebuildScript)) {
                 $this->executeScript($prebuildScript, null);
@@ -93,16 +83,16 @@ class Executor
 
     private function executeScript(Script $script, ?Environment $envVars): void
     {
-        $this->scriptRunner->run($script, $this->populateEnvironment->call($this, $envVars));
+        $this->scriptRunner->run($script, $envVars?->toArray() ?? [], $this->logger);
 
-        if ($script->getSuccessful() === false) {
+        if ($script->getStatus() === Status::Failure) {
             $this->status = Status::Failure;
         }
     }
 
     private function shouldExecute(Script $script): bool
     {
-        return $script->getSuccessful() !== false
+        return $script->getStatus() !== Status::Failure
             && !$this->scriptRunner->isRunning()
             && !$script->isFinished()
             && $this->status === Status::Pending;

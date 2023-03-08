@@ -15,8 +15,8 @@ class HttpClient extends Client
         parent::__construct([
             'base_uri' => 'https://api.github.com/',
             'headers'  => [
-                'Authorization' => 'Bearer ' . $githubApiToken,
-                'Accept'        => 'application/vnd.github.v3+json', //wymagane przez API GitHub
+                'Authorization' => 'token ' . $githubApiToken,
+                'Accept'        => 'application/vnd.github.v3+json',
             ],
         ]);
     }

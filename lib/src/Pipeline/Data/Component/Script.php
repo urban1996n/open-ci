@@ -2,6 +2,8 @@
 
 namespace App\Pipeline\Data\Component;
 
+use App\Common\Status;
+
 class Script
 {
     private string $context;
@@ -15,7 +17,7 @@ class Script
 
     private bool $finished = false;
 
-    private ?bool $successful = null;
+    private Status|null $status = null;
 
     public function __construct(string $context, string $binary, string $command)
     {
@@ -63,14 +65,14 @@ class Script
         $this->finished = $finished;
     }
 
-    public function setSuccessful(?bool $successful): void
+    public function setStatus(Status $status): void
     {
-        $this->successful = $successful;
+        $this->status = $status;
     }
 
-    public function getSuccessful(): ?bool
+    public function getStatus(): ?Status
     {
-        return $this->successful;
+        return $this->status;
     }
 
     public function isFinished(): bool

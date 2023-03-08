@@ -8,7 +8,7 @@ use Psr\Http\Message\RequestInterface;
 
 abstract class AbstractGithubRequestCreator implements RequestCreatorInterface
 {
-    public function __construct(protected readonly string $owner, protected readonly string $repository)
+    public function __construct(protected readonly string $githubOwner, protected readonly string $githubRepository)
     {
     }
 

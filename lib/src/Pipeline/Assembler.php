@@ -54,6 +54,8 @@ class Assembler
 
                     $step->addScript($script);
                 }
+
+                $stage->addStep($step);
             }
 
             $stage->setEnvironment($stageEnvironment);
