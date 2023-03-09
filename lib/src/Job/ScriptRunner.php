@@ -2,9 +2,9 @@
 
 namespace App\Job;
 
-use App\Pipeline\Component\Script;
+use App\Common\Status;
+use App\Pipeline\Data\Component\Script;
 use Monolog\Level;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -16,57 +16,59 @@ class ScriptRunner
 {
     private const TIMEOUT = 20000000;
 
-    private ?LoggerInterface $logger = null;
-
     private OutputInterface $output;
 
-    private bool $locked = false;
+    private bool $running = false;
+
+    private ?\Closure $logger = null;
 
     public function __construct()
     {
         $this->output = new ConsoleOutput();
     }
 
-    public function setLogger(LoggerInterface $logger): void
+    /** @param \Closure<int, string> */
+    public function run(Script $script, array $env, \Closure $logger): void
     {
         $this->logger = $logger;
-    }
-
-    public function run(Script $script, array $env = []): void
-    {
-        $command = $this->buildProcessFromScript($script);
+        $command      = $this->buildProcessFromScript($script);
         $command->setTimeout(self::TIMEOUT);
 
         try {
-            $command->start($this->onScriptOutputCallback(), $env);
-        } catch (ProcessFailedException $processFailedException) {
-
-        } catch (ProcessTimedOutException $processTimedOutException) {
-
-        } catch (ProcessSignaledException $processSignaledException) {
-
+            $command->mustRun($this->onScriptOutputCallback($script), $env);
+        } catch (ProcessFailedException|ProcessTimedOutException|ProcessSignaledException $processFailedException) {
+            $this->logger->call($this, 'error', $processFailedException->getMessage());
+            $script->setStatus(Status::Failure);
+            $script->setFinished(true);
         }
 
-        while ($command->isRunning()) {
-            $this->locked = true;
+        while ($command->isRunning() && $script->getStatus() === null) {
+            $this->running = true;
+            $script->setStatus(Status::Pending);
             $script->setFinished(false);
         }
 
         $script->setFinished(true);
-        $script->setSuccessful($command->isSuccessful());
 
-        $this->locked = false;
+        if (!$script->getStatus()) {
+            $script->setStatus($command->isSuccessful() ? Status::Success : Status::Failure);
+        }
+
+        $this->running = false;
     }
 
-    private function onScriptOutputCallback(): \Closure
+    private function onScriptOutputCallback(Script $script): \Closure
     {
-        return function (string $type, string $line) : void {
+        return function (string $type, string $line) use ($script): void {
             $this->output->writeln($this->composeMessage($type, $line));
 
-            $this->logger->log(
-                $type === Process::ERR ? Level::Error : Level::Info,
-                $line
-            );
+            if ($type === Process::ERR) {
+                $script->setStatus(Status::Failure);
+            }
+
+            $type = $type === Process::ERR ? Level::Error : Level::Info;
+
+            $this->logger->call($this, $type->toPsrLogLevel(), $line);
         };
     }
 
@@ -86,8 +88,8 @@ class ScriptRunner
         return new Process([$script->getBinary(), $command, ...$script->getArgs()]);
     }
 
-    public function isLocked(): bool
+    public function isRunning(): bool
     {
-        return $this->locked;
+        return $this->running;
     }
 }

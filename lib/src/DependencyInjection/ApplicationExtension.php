@@ -2,6 +2,7 @@
 
 namespace App\DependencyInjection;
 
+use App\Github\Request\RequestCreatorInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
@@ -14,7 +15,7 @@ class ApplicationExtension implements ExtensionInterface
 
     public function __construct()
     {
-        $this->fileLocator = new FileLocator(__DIR__ . '/../../config');
+        $this->fileLocator = new FileLocator(\Application::getRootDirectory() . '/config');
     }
 
     public function getAlias()
@@ -35,18 +36,18 @@ class ApplicationExtension implements ExtensionInterface
     public function load(array $configs, ContainerBuilder $container)
     {
         $this->buildContainer($container);
-        $this->loadEnvironment();
+        $this->registerServices($container);
+    }
+
+    private function registerServices(ContainerBuilder $container): void
+    {
+        $container->registerForAutoconfiguration(RequestCreatorInterface::class)
+            ->addTag(GithubCompilerPass::SERVICE_TAG_REQUEST_CREATOR);
     }
 
     private function buildContainer(ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, $this->fileLocator);
         $loader->load('services.yaml');
-    }
-
-    private function loadEnvironment(): void
-    {
-        $dotenv = new Dotenv();
-        $dotenv->load($this->fileLocator->locate('.env'));
     }
 }

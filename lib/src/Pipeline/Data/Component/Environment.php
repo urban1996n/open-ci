@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Pipeline\Component;
+namespace App\Pipeline\Data\Component;
 
 class Environment
 {
@@ -16,5 +16,16 @@ class Environment
     public function getVariables(): array
     {
         return $this->variables;
+    }
+
+    public function toArray(): array
+    {
+        $vars = [];
+
+        foreach ($this->getVariables() as $envVar) {
+            $vars[$envVar->getName()] = $envVar->getValue();
+        }
+
+        return $vars;
     }
 }

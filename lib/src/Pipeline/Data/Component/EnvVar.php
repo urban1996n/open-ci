@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Pipeline\Component;
+namespace App\Pipeline\Data\Component;
 
-class Argument
+class EnvVar
 {
     private string $name;
 
@@ -14,12 +14,17 @@ class Argument
         $this->value = $value;
     }
 
-    public function __toString(): string
+    public function getName(): string
     {
-        return $this->name . ' ' . $this->value;
+        return $this->name;
     }
 
-    public static function fromArray($initializer): Argument
+    public function getValue(): mixed
+    {
+        return $this->value;
+    }
+
+    public static function fromArray(array $initializer): EnvVar
     {
         $name  = $initializer['name'];
         $value = $initializer['value'];

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Pipeline\Component;
+namespace App\Pipeline\Data\Component;
 
 class Stage
 {
@@ -44,8 +44,7 @@ class Stage
     public static function fromArray(array $initializer): Stage
     {
         $name = $initializer['name'];
-        $env  = $initializer['env_vars'];
 
-        return new self($name, $env);
+        return new self($name);
     }
 }

@@ -15,6 +15,7 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "guzzlehttp/guzzle": "^7.5",
         "monolog/monolog": "^3.2",
         "opis/json-schema": "^2.2",
         "php-amqplib/php-amqplib": ">=3.0",
@@ -24,7 +25,7 @@
         "symfony/dotenv": "6.2.*",
         "symfony/process": "^6.2",
         "symfony/runtime": "6.2.*",
-        "symfony/yaml": "6.2.*"
+        "symfony/yaml": "6.2.*", "ext-amqp": "*"
     },
     "config": {
         "allow-plugins": {

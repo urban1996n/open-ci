@@ -1,41 +1,50 @@
+imports:
+  - { resource: parameters.yaml }
 services:
   _defaults:
-    autowire: false
-    autoconfigure: false
+    autowire: true
+    autoconfigure: true
     public: false
     bind:
       $rootDir: '%application.root_dir%'
+      $githubOwner: '%github_owner%'
+      $githubRepository: '%github_repository%'
+
+  App\:
+    resource: '../src/*'
 
   pipeline_assembler:
     class: App\Pipeline\Assembler
 
   pipeline_schema_validator:
     class: App\Pipeline\SchemaValidator
-    arguments: ['%env(SCHEMA_URL)%']
+    arguments: [ '%env(SCHEMA_URL)%' ]
 
-  pipeline_factory:
-    class: App\Pipeline\PipelineFactory
-    arguments: ['@pipeline_schema_validator', '@pipeline_assembler', '%env(PIPELINE_PATH)%']
+  App\Pipeline\PipelineFactory:
+    arguments: [ '@pipeline_schema_validator', '@pipeline_assembler', '%env(PIPELINE_PATH)%' ]
 
   script_runner:
     class: App\Job\ScriptRunner
-    calls:
-      - [setLogger, ['@Psr\Log\LoggerInterface']]
 
   pipeline_executor:
-    class: App\Job\PipelineExecutor
-    arguments: ['@pipeline_factory', '@script_runner']
+    class: App\Job\Executor
+    arguments: [ '@pipeline_factory', '@script_runner' ]
+
+  amqp_connection:
+    class: App\AMQP\Connection
+    arguments: [ '%env(AMQP_HOST)%', '%env(AMQP_PORT)%', '%env(AMQP_USER)%', '%env(AMQP_PASSWORD)%' ]
+
+  logger_factory:
+    class: App\Job\Logger\LoggerFactory
 
   pipeline_command:
     class: App\Command\RunPipelineCommand
-    calls:
-      - [setUpFactory, ['@pipeline_executor']]
+
+  App\Github\HttpClient:
+    arguments:
+      $githubApiToken: '%github_api_token%'
 
   Application:
     class: Application
-    arguments: [['@pipeline_command']]
+    arguments: [ [ '@pipeline_command' ] ]
     public: true
-
-  App\Common\Logger:
-
-  Psr\Log\LoggerInterface: '@App\Common\Logger'

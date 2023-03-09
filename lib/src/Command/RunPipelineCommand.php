@@ -2,8 +2,9 @@
 
 namespace App\Command;
 
-use App\Job\Data\Job;
-use App\Job\PipelineExecutor;
+use App\Github\HttpClient;
+use App\Job\Job;
+use App\Job\JobFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,19 +13,23 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand('pipeline:run-single')]
 class RunPipelineCommand extends Command
 {
-    private PipelineExecutor $pipelineExecutor;
+    private HttpClient $client;
+
+    private JobFactory $factory;
 
     /** @required */
-    public function setUpFactory(PipelineExecutor $executor): void
+    public function setUpFactory(HttpClient $client, JobFactory $factory): void
     {
-        $this->pipelineExecutor = $executor;
+        $this->client  = $client;
+        $this->factory = $factory;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $job = new Job('test-pipeline-branch', 'abc12456');
+        $job = $this->factory->create('main2', 'e871d16b5abc6326caa5cce72cbdab7bb13350dd', 1);
 
-        $this->pipelineExecutor->execute($job);
+        $response = $this->client->createStatusCheck($job);
+        var_dump($response->getBody()->getContents());
 
         return 0;
     }

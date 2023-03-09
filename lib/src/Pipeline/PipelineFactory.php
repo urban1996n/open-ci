@@ -2,6 +2,7 @@
 
 namespace App\Pipeline;
 
+use App\Pipeline\Data\Pipeline;
 use App\Pipeline\Exception\PipelineException;
 
 class PipelineFactory
