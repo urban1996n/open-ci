@@ -8,7 +8,7 @@ use Monolog\Level;
 
 class Job
 {
-    private Status|null $status = null;
+    private Status $status = Status::Pending;
 
     public function __construct(
         private readonly string $branch,
@@ -26,7 +26,7 @@ class Job
             $logger->log(Level::fromName($type), $message);
         };
 
-        $this->executor->execute($logger);
+        $this->executor->execute($logger, $this->status);
         $this->status = $this->executor->getStatus();
     }
 

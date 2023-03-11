@@ -15,7 +15,7 @@ class Executor
 {
     private ?Pipeline $pipeline = null;
 
-    private Status $status = Status::Pending;
+    private ?Status $status = null;
 
     private ?\Closure $logger = null;
 
@@ -23,8 +23,9 @@ class Executor
     {
     }
 
-    public function execute(\Closure $logger): void
+    public function execute(\Closure $logger, Status $status): void
     {
+        $this->status   = $status;
         $this->pipeline = $this->factory->create();
         $this->logger   = $logger;
         $this->loadEnv();
