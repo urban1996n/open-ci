@@ -25,4 +25,9 @@ class HttpClient extends Client
     {
         return $this->send($this->factory->create(RequestType::COMMIT_STATUS_UPDATE, $job));
     }
+
+    public function downloadZipArchive(Job $job): ResponseInterface
+    {
+        return $this->send($this->factory->create(RequestType::REPOSITORY_DOWNLOAD, $job));
+    }
 }
