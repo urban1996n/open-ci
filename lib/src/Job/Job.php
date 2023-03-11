@@ -54,4 +54,9 @@ class Job
     {
         return $this->status;
     }
+
+    public function getIdentifier(): string
+    {
+        return \substr(\md5($this->getBranch() . $this->getCurrentCommit() . $this->getBuildNumber()), 0, 20);
+    }
 }
