@@ -11,6 +11,6 @@ enum Status: string
 
     public function isFinished(): bool
     {
-        return !\in_array($this->value, [self::InProgress, self::Pending]);
+        return !\in_array($this, [self::InProgress, self::Pending]);
     }
 }

@@ -21,7 +21,12 @@ class HttpClient extends Client
         ]);
     }
 
-    public function createStatusCheck(Job $job): ResponseInterface
+    public function initCommitStatus(Job $job): ResponseInterface
+    {
+        return $this->send($this->factory->create(RequestType::COMMIT_STATUS_INIT, $job));
+    }
+
+    public function updateCommitStatus(Job $job): ResponseInterface
     {
         return $this->send($this->factory->create(RequestType::COMMIT_STATUS_UPDATE, $job));
     }

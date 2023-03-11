@@ -8,25 +8,24 @@ use App\Pipeline\Data\Component\Script;
 use App\Pipeline\Data\Component\Stage;
 use App\Pipeline\Data\Component\Step;
 use App\Pipeline\Data\Pipeline;
-use App\Pipeline\PipelineFactory;
 use Symfony\Component\Dotenv\Dotenv;
 
 class Executor
 {
     private ?Pipeline $pipeline = null;
 
-    private ?Status $status = null;
+    private Status $status = Status::Pending;
 
     private ?\Closure $logger = null;
 
-    public function __construct(private readonly PipelineFactory $factory, private readonly ScriptRunner $scriptRunner)
+    public function __construct(private readonly ScriptRunner $scriptRunner)
     {
     }
 
-    public function execute(\Closure $logger, Status $status): void
+    public function execute(\Closure $logger, Status $status, Pipeline $pipeline): void
     {
         $this->status   = $status;
-        $this->pipeline = $this->factory->create();
+        $this->pipeline = $pipeline;
         $this->logger   = $logger;
         $this->loadEnv();
         $this->executePreBuildScripts();
@@ -96,6 +95,6 @@ class Executor
         return $script->getStatus() !== Status::Failure
             && !$this->scriptRunner->isRunning()
             && !$script->isFinished()
-            && $this->status === Status::Pending;
+            && $this->status === Status::InProgress;
     }
 }

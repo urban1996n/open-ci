@@ -2,31 +2,28 @@
 
 namespace App\Runner;
 
-use App\Job\Executor;
 use App\Job\Job;
-use App\Job\Logger\LoggerFactory;
+use App\Resource\FileManager;
+use App\Resource\GithubArchiveManager;
+use App\Resource\GithubRepoDownloader;
+use App\Resource\Locator;
 
 class Runner
 {
-    private bool $occupied = false;
-
-    public function __construct(private readonly Executor $executor, private readonly LoggerFactory $factory)
-    {
-
+    public function __construct(
+        private readonly GithubRepoDownloader $downloader,
+        private readonly GithubArchiveManager $archiveManager,
+        private readonly FileManager $fileManager,
+        private readonly Locator $locator,
+    ) {
     }
 
     public function run(Job $job): void
     {
-        $this->occupied = true;
-
-        $job->setUp($this->executor, $this->factory->create($job));
+        $this->downloader->download($job);
+        $this->archiveManager->unpack($job);
+        $this->downloader->remove($job);
         $job->start();
-
-        $this->occupied = false;
-    }
-
-    public function isOccupied(): bool
-    {
-        return $this->occupied;
+        $this->fileManager->removeDir($this->locator->getUnpackedRepoDirForJob($job));
     }
 }

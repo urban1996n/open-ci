@@ -4,6 +4,8 @@ namespace App\Job;
 
 use App\Common\Status;
 use App\Job\Logger\Logger;
+use App\Pipeline\PipelineFactory;
+use App\Resource\Locator;
 use Monolog\Level;
 
 class Job
@@ -15,7 +17,9 @@ class Job
         private readonly string $currentCommit,
         private readonly int $buildNumber,
         private readonly Executor $executor,
-        private readonly Logger $logger
+        private readonly Logger $logger,
+        private readonly Locator $locator,
+        private readonly PipelineFactory $pipelineFactory
     ) {
     }
 
@@ -26,7 +30,12 @@ class Job
             $logger->log(Level::fromName($type), $message);
         };
 
-        $this->executor->execute($logger, $this->status);
+        $this->executor->execute(
+            $logger,
+            $this->status,
+            $this->pipelineFactory->create($this->locator->getPipelineFileForJob($this))
+        );
+
         $this->status = $this->executor->getStatus();
     }
 

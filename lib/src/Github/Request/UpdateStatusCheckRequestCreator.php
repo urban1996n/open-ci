@@ -4,8 +4,13 @@ namespace App\Github\Request;
 
 use App\Job\Job;
 
-class ModifyStatusCheckRequestCreator extends AbstractStatusRequestCreator
+class UpdateStatusCheckRequestCreator extends AbstractStatusRequestCreator
 {
+    public function supports(RequestType $type, ?object $subject): bool
+    {
+        return parent::supports($type, $subject) && $type === RequestType::COMMIT_STATUS_UPDATE;
+    }
+
     protected function getMethod(?object $subject): string
     {
         return 'POST';

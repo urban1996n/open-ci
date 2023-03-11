@@ -8,8 +8,7 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
 {
     public function supports(RequestType $type, ?object $subject): bool
     {
-        return \in_array($type, [RequestType::COMMIT_STATUS_GET, RequestType::COMMIT_STATUS_UPDATE])
-            && $subject instanceof Job;
+        return $subject instanceof Job;
     }
 
     protected function getRequestBody(?object $subject): array

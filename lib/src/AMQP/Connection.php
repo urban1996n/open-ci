@@ -9,10 +9,17 @@ class Connection extends AMQPStreamConnection
 {
     private ?AMQPChannel $currentChannel = null;
 
-    public function defineQueues(): void
+    private function defineQueues(): void
     {
         foreach (Queue::cases() as $queue) {
-            $this->currentChannel->queue_declare($queue, true);
+            $this->currentChannel->queue_declare($queue->value, true);
+        }
+    }
+
+    private function defineExchanges(): void
+    {
+        foreach (Exchange::cases() as $case) {
+            $this->currentChannel->exchange_declare($case->value, 'fanout');
         }
     }
 
@@ -22,6 +29,7 @@ class Connection extends AMQPStreamConnection
 
         $this->currentChannel = $this->currentChannel ?: $this->channel();
         $this->defineQueues();
+        $this->defineExchanges();
     }
 
     public function getCurrentChannel(): AMQPChannel

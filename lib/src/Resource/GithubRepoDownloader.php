@@ -35,7 +35,6 @@ class GithubRepoDownloader
 
     public function remove(Job $job): void
     {
-        sleep(5);
         $tmpFile = $this->tmpFiles[$job->getIdentifier()] ?? null;
         if (!$tmpFile) {
             throw new \RuntimeException();

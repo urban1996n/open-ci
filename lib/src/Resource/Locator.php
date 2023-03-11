@@ -21,7 +21,7 @@ class Locator
 
     public function locateExecDir(): string
     {
-        return $this->rootDir . '../../src';
+        return $this->rootDir . '/../src';
     }
 
     public function getTempDirForJob(Job $job): string
@@ -39,9 +39,23 @@ class Locator
         return $this->locateExecDir() . '/' . $this->buildDestinationPath($job);
     }
 
+    public function getUnpackedRepoDirForJob(Job $job): string
+    {
+        return $this->getExecDirForJob($job)
+            . '/' . $this->githubOwner . '-' . $this->githubRepository . '-' . $job->getCurrentCommit();
+    }
+
+    public function getPipelineFileForJob(Job $job): string
+    {
+        return $this->getUnpackedRepoDirForJob($job) . '/pipeline.json';
+    }
+
     private function buildDestinationPath(Job $job): string
     {
-        return $this->githubOwner . '/' . $this->githubRepository . '/' . $job->getBranch() . '/'
-            . $job->getCurrentCommit() . '/' . $job->getBuildNumber();
+        return $this->githubOwner
+            . '/' . $this->githubRepository
+            . '/' . $job->getBranch()
+            . '/' . $job->getCurrentCommit()
+            . '/' . $job->getBuildNumber();
     }
 }

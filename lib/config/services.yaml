@@ -30,8 +30,7 @@ services:
     class: App\Job\Executor
     arguments: [ '@pipeline_factory', '@script_runner' ]
 
-  amqp_connection:
-    class: App\AMQP\Connection
+  App\AMQP\Connection:
     arguments: [ '%env(AMQP_HOST)%', '%env(AMQP_PORT)%', '%env(AMQP_USER)%', '%env(AMQP_PASSWORD)%' ]
 
   logger_factory:
@@ -39,12 +38,8 @@ services:
 
   pipeline_command:
     class: App\Command\RunPipelineCommand
+    public: true
 
   App\Github\HttpClient:
     arguments:
       $githubApiToken: '%github_api_token%'
-
-  Application:
-    class: Application
-    arguments: [ [ '@pipeline_command' ] ]
-    public: true

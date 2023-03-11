@@ -59,6 +59,7 @@ class ScriptRunner
 
     private function onScriptOutputCallback(Script $script): \Closure
     {
+        var_dump($script);
         return function (string $type, string $line) use ($script): void {
             $this->output->writeln($this->composeMessage($type, $line));
 
