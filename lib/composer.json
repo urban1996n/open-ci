@@ -15,6 +15,7 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-zip": "*",
         "guzzlehttp/guzzle": "^7.5",
         "monolog/monolog": "^3.2",
         "opis/json-schema": "^2.2",
