@@ -32,7 +32,7 @@ class Job
 
     public function isFinished(): bool
     {
-        return $this->status->isFinished();
+        return !!$this?->status?->isFinished();
     }
 
     public function getBranch(): string
