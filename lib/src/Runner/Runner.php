@@ -20,10 +20,25 @@ class Runner
 
     public function run(Job $job): void
     {
+        $this->runPreExecutionTasks($job);
+        $this->runJobExecutionTasks($job);
+        $this->runPostExecutionTasks($job);
+    }
+
+    private function runPreExecutionTasks(Job $job): void
+    {
         $this->downloader->download($job);
         $this->archiveManager->unpack($job);
         $this->downloader->remove($job);
+    }
+
+    private function runJobExecutionTasks(Job $job): void
+    {
         $job->start();
+    }
+
+    private function runPostExecutionTasks(Job $job): void
+    {
         $this->fileManager->removeDir($this->locator->getUnpackedRepoDirForJob($job));
     }
 }

@@ -6,7 +6,7 @@ services:
     autoconfigure: true
     public: false
     bind:
-      $rootDir: '%application.root_dir%'
+      $rootDir: '%kernel.project_dir%'
       $githubOwner: '%github_owner%'
       $githubRepository: '%github_repository%'
 

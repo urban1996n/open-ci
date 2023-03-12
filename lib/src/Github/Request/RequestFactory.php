@@ -12,11 +12,11 @@ class RequestFactory
     {
     }
 
-    public function create(RequestType $type, ?object $subject): ?RequestInterface
+    public function create(RequestType $type, ?object $subject, array $context = []): ?RequestInterface
     {
         foreach ($this->requestCreators as $requestCreator) {
             if ($requestCreator->supports($type, $subject)) {
-                return $requestCreator->create($type, $subject);
+                return $requestCreator->create($type, $subject, $context);
             }
         }
 

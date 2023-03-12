@@ -16,7 +16,7 @@ class UpdateStatusCheckRequestCreator extends AbstractStatusRequestCreator
         return 'POST';
     }
 
-    protected function getRequestBody(?object $subject): array
+    protected function getRequestBody(?object $subject, array $context = []): array
     {
         /** @var Job $subject */
         return parent::getRequestBody($subject) + ['state' => $subject->getStatus()->name];

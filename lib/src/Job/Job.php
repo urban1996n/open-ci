@@ -3,7 +3,9 @@
 namespace App\Job;
 
 use App\Common\Status;
+use App\Job\Exception\JobRunException;
 use App\Job\Logger\Logger;
+use App\Pipeline\Exception\PipelineException;
 use App\Pipeline\PipelineFactory;
 use App\Resource\Locator;
 use Monolog\Level;
@@ -30,13 +32,17 @@ class Job
             $logger->log(Level::fromName($type), $message);
         };
 
-        $this->executor->execute(
-            $logger,
-            $this->status,
-            $this->pipelineFactory->create($this->locator->getPipelineFileForJob($this))
-        );
-
-        $this->status = $this->executor->getStatus();
+        try {
+            $this->executor->execute(
+                $logger,
+                $this->status,
+                $this->pipelineFactory->create($this->locator->getPipelineFileForJob($this))
+            );
+        } catch (\Throwable $exception) {
+            $this->status = Status::Failure;
+            // Otherwise create translatable exception. - Only pipeline and job exceptions will work as a reason for status change.
+            throw new JobRunException($exception->getMessage(), $this);
+        }
     }
 
     public function isFinished(): bool

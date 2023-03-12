@@ -2,7 +2,7 @@
 
 namespace App\Github\Request;
 
-class InitStatusCheckRequestCreator extends AbstractStatusRequestCreator
+class MarkCheckFailureRequestCreator extends AbstractStatusRequestCreator
 {
     public function supports(RequestType $type, ?object $subject): bool
     {
@@ -16,6 +16,6 @@ class InitStatusCheckRequestCreator extends AbstractStatusRequestCreator
 
     protected function getRequestBody(?object $subject, array $context = []): array
     {
-        return parent::getRequestBody($subject) + ['state' => 'pending'];
+        return parent::getRequestBody($subject) + ['state' => 'failure'];
     }
 }

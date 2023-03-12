@@ -2,9 +2,11 @@
 
 namespace App\Job;
 
+use App\Job\Exception\JobCreationException;
 use App\Job\Logger\LoggerFactory;
 use App\Pipeline\PipelineFactory;
 use App\Resource\Locator;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobFactory
 {
@@ -16,10 +18,25 @@ class JobFactory
     ) {
     }
 
-    public function create(string $branch, string $commitHash, int $buildNumber): Job
+    // Removed hard typing so all future errors can be globally handled here.
+    public function create($branch, $commitHash, $buildNumber): ?Job
     {
         $logger = $this->factory->create($branch, $commitHash, $buildNumber);
 
-        return new Job($branch, $commitHash, $buildNumber, $this->executor, $logger, $this->locator, $this->pipelineFactory);
+        try {
+            $job = new Job(
+                $branch,
+                $commitHash,
+                $buildNumber,
+                $this->executor,
+                $logger,
+                $this->locator,
+                $this->pipelineFactory
+            );
+        } catch (\Throwable $exception) {
+            throw new JobCreationException($exception->getMessage(), null);
+        }
+
+        return $job;
     }
 }

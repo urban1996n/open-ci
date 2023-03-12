@@ -11,19 +11,18 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
         return $subject instanceof Job;
     }
 
-    protected function getRequestBody(?object $subject): array
+    protected function getRequestBody(?object $subject, array $context = []): array
     {
         return [
-            'target_url' => 'https://example.com/build/status',
-            'description' => 'Building your commit!',
-            'context' => 'continuous-integration/ci-cd',
+            'description' => $context['description'] ?? 'Building your commit',
+            'context'     => 'continuous-integration/ci-cd',
         ];
     }
 
     protected function getUri(?object $subject): string
     {
         if (!$subject instanceof Job) {
-            return '';
+            throw new \RuntimeException();
         }
 
         return \strtr(

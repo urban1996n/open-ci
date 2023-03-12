@@ -11,7 +11,7 @@ class DownloadZipBallRequestCreator extends AbstractGithubRequestCreator
         return 'GET';
     }
 
-    protected function getRequestBody(?object $subject): array
+    protected function getRequestBody(?object $subject, array $context = []): array
     {
         return [];
     }

@@ -12,7 +12,7 @@ abstract class AbstractGithubRequestCreator implements RequestCreatorInterface
     {
     }
 
-    abstract protected function getRequestBody(?object $subject): array;
+    abstract protected function getRequestBody(?object $subject, array $context = []): array;
 
     abstract protected function getUri(?object $subject): string;
 
@@ -23,7 +23,7 @@ abstract class AbstractGithubRequestCreator implements RequestCreatorInterface
         return [];
     }
 
-    public function create(RequestType $type, ?object $subject): RequestInterface
+    public function create(RequestType $type, ?object $subject, array $context = []): RequestInterface
     {
         $requestBody = $this->getRequestBody($subject) ? Utils::jsonEncode($this->getRequestBody($subject)) : null;
 

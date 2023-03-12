@@ -7,6 +7,7 @@ use App\Job\JobFactory;
 use App\Runner\Consumer;
 use App\Runner\Runner;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,15 +37,25 @@ class RunPipelineCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $consumeJobMessage = function (AMQPMessage $message): void {
-            $headers = $message->get('application_headers');
-            ['commit_hash' => $commitHash, 'branch' => $branch, 'build_number' => $buildNumber] = $headers;
-            $job = $this->jobFactory->create($branch, $commitHash, $buildNumber);
-            $this->client->initCommitStatus($job);
+            try {
+                $headers = $message->get('application_headers');
+                $headers = $headers->offsetGet('github_data');
+
+                [
+                    'commit_hash'  => $commitHash,
+                    'branch_name'  => $branch,
+                    'build_number' => $buildNumber,
+                ] = $headers;
+                $job = $this->jobFactory->create($branch, $commitHash, $buildNumber);
+                $this->client->initCommitStatus($job);
+                $this->runner->run($job);
+            } catch (\Throwable $exception) {
+            } finally {
+                $this->consumer->acknowledge($message);
+            }
         };
 
         $this->consumer->consume($consumeJobMessage);
-        $job = $this->jobFactory->create('main', '8b5187caa98c9065af9ad9fdece70692fb3552c1', 1);
-        $this->runner->run($job);
 
         return 0;
     }

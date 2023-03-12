@@ -22,6 +22,11 @@ abstract class AbstractConsumer
         }
     }
 
+    public function acknowledge(AMQPMessage $message): void
+    {
+        $this->connection->getCurrentChannel()->basic_ack($message->delivery_info['delivery_tag']);
+    }
+
     abstract protected function getQueue(): Queue;
 
     abstract protected function getExchange(): Exchange;
