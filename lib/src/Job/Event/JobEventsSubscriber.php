@@ -26,19 +26,16 @@ class JobEventsSubscriber implements EventSubscriberInterface
 
     public function onJobError(ErrorEvent $event): void
     {
-        dd('asd');
         $this->client->markStatusFailure($event->getConfig(), $event->getException()->getMessage());
     }
 
     public function onJobCreated(CreatedEvent $event): void
     {
-        dd('asd');
         $this->client->initCommitStatus($event->getConfig());
     }
 
     public function onJobStatusChange(StatusChangeEvent $event): void
     {
-        dd('asd');
         $this->client->updateCommitStatus($event->getConfig(), $event->getStatus());
     }
 }
