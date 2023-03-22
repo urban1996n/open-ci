@@ -12,11 +12,13 @@ abstract class AbstractMessenger
 
     public function send(AMQPMessage $message): void
     {
-        $this->connection->getCurrentChannel()->basic_publish(
-            $message,
-            $this->getExchange()->value,
-            $this->getQueue()->value
-        );
+        if ($this->connection->isInitialized()) {
+            $this->connection->getCurrentChannel()->basic_publish(
+                $message,
+                $this->getExchange()->value,
+                $this->getQueue()->value
+            );
+        }
     }
 
     abstract protected function getQueue(): Queue;

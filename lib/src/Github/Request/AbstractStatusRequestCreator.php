@@ -2,13 +2,14 @@
 
 namespace App\Github\Request;
 
+use App\Job\Data\Config;
 use App\Job\Job;
 
 abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
 {
     public function supports(RequestType $type, ?object $subject): bool
     {
-        return $subject instanceof Job;
+        return $subject instanceof Config;
     }
 
     protected function getRequestBody(?object $subject, array $context = []): array
@@ -21,7 +22,7 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
 
     protected function getUri(?object $subject): string
     {
-        if (!$subject instanceof Job) {
+        if (!$subject instanceof Config) {
             throw new \RuntimeException();
         }
 
@@ -30,7 +31,7 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
             [
                 '{owner}' => $this->githubOwner,
                 '{repo}'  => $this->githubRepository,
-                '{sha}'   => $subject->getCurrentCommit(),
+                '{sha}'   => $subject->getCommitHash(),
             ]
         );
     }

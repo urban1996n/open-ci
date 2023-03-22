@@ -3,7 +3,7 @@
 namespace App\Resource;
 
 use App\Github\HttpClient;
-use App\Job\Job;
+use App\Job\Data\Config;
 
 class GithubRepoDownloader
 {
@@ -17,30 +17,30 @@ class GithubRepoDownloader
     ) {
     }
 
-    public function download(Job $job): void
+    public function download(Config $jobConfig): void
     {
-        $fileResponse = $this->client->downloadZipArchive($job);
+        $fileResponse = $this->client->downloadZipArchive($jobConfig);
 
-        $this->fileManager->createDirectory($this->locator->getTempDirForJob($job));
+        $this->fileManager->createDirectory($this->locator->getTempDirForJob($jobConfig));
         if ($fileResponse->getStatusCode() !== 200
-            || !$tmpFile = \fopen($this->locator->getTemporaryRepoArchiveFile($job), 'w+')
+            || !$tmpFile = \fopen($this->locator->getTemporaryRepoArchiveFile($jobConfig), 'w+')
         ) {
             throw new \RuntimeException();
         }
 
-        $repoContent                           = $fileResponse->getBody()->getContents();
-        $this->tmpFiles[$job->getIdentifier()] = $tmpFile;
+        $repoContent                                 = $fileResponse->getBody()->getContents();
+        $this->tmpFiles[$jobConfig->getIdentifier()] = $tmpFile;
         \fwrite($tmpFile, $repoContent);
     }
 
-    public function remove(Job $job): void
+    public function remove(Config $jobConfig): void
     {
-        $tmpFile = $this->tmpFiles[$job->getIdentifier()] ?? null;
+        $tmpFile = $this->tmpFiles[$jobConfig->getIdentifier()] ?? null;
         if (!$tmpFile) {
             throw new \RuntimeException();
         }
 
-        $this->fileManager->removeDir($this->locator->getTempDirForJob($job));
-        unset($this->tmpFiles[$job->getIdentifier()]);
+        $this->fileManager->removeDir($this->locator->getTempDirForJob($jobConfig));
+        unset($this->tmpFiles[$jobConfig->getIdentifier()]);
     }
 }

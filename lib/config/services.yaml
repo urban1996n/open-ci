@@ -32,6 +32,20 @@ services:
 
   App\AMQP\Connection:
     arguments: [ '%env(AMQP_HOST)%', '%env(AMQP_PORT)%', '%env(AMQP_USER)%', '%env(AMQP_PASSWORD)%' ]
+    lazy: true
+
+  App\AMQP\AbstractConsumer:
+    lazy: true
+
+  App\AMQP\AbstractMessenger:
+    lazy: true
+
+  App\Storage\Redis:
+    arguments:
+      $redisUrl: '%env(REDIS_URL)%'
+    lazy: true
+
+  App\Common\Decorator\JobRegistrySemaphore:
 
   logger_factory:
     class: App\Job\Logger\LoggerFactory

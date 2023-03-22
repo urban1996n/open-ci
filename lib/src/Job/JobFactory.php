@@ -2,10 +2,18 @@
 
 namespace App\Job;
 
+use App\Job\Data\Config;
+use App\Job\Event\CreatedEvent;
+use App\Job\Event\ErrorEvent;
+use App\Job\Event\JobEvents;
 use App\Job\Exception\JobCreationException;
 use App\Job\Logger\LoggerFactory;
 use App\Pipeline\PipelineFactory;
 use App\Resource\Locator;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobFactory
@@ -14,27 +22,35 @@ class JobFactory
         private readonly LoggerFactory $factory,
         private readonly Executor $executor,
         private readonly Locator $locator,
-        private readonly PipelineFactory $pipelineFactory
+        private readonly PipelineFactory $pipelineFactory,
+        private readonly EventDispatcherInterface $dispatcher,
     ) {
     }
 
-    // Removed hard typing so all future errors can be globally handled here.
-    public function create($branch, $commitHash, $buildNumber): ?Job
+    public function create(Config $config): ?Job
     {
-        $logger = $this->factory->create($branch, $commitHash, $buildNumber);
+        $logger = $this->factory->create($config->getBranch(), $config->getCommitHash(), $config->getBuildNumber());
+        $job    = null;
 
         try {
             $job = new Job(
-                $branch,
-                $commitHash,
-                $buildNumber,
+                $config,
                 $this->executor,
                 $logger,
                 $this->locator,
-                $this->pipelineFactory
+                $this->pipelineFactory,
+                $this->dispatcher
+            );
+
+            $this->dispatcher->dispatch(
+                new CreatedEvent($config),
+                JobEvents::JOB_CREATED->value
             );
         } catch (\Throwable $exception) {
-            throw new JobCreationException($exception->getMessage(), null);
+            $this->dispatcher->dispatch(
+                new ErrorEvent($config, new JobCreationException($exception->getMessage(), null)),
+                JobEvents::JOB_ERROR->value
+            );
         }
 
         return $job;

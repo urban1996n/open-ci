@@ -2,8 +2,10 @@
 
 namespace App\Github;
 
+use App\Common\Status;
 use App\Github\Request\RequestFactory;
 use App\Github\Request\RequestType;
+use App\Job\Data\Config;
 use App\Job\Job;
 use App\Pipeline\Exception\PipelineException;
 use GuzzleHttp\Client;
@@ -26,22 +28,24 @@ class HttpClient extends Client
         ]);
     }
 
-    public function initCommitStatus(Job $job): ResponseInterface
+    public function initCommitStatus(Config $job): ResponseInterface
     {
         return $this->send($this->factory->create(RequestType::COMMIT_STATUS_INIT, $job));
     }
 
-    public function updateCommitStatus(Job $job): ResponseInterface
+    public function updateCommitStatus(Config $job, Status $status): ResponseInterface
     {
-        return $this->send($this->factory->create(RequestType::COMMIT_STATUS_UPDATE, $job));
+        return $this->send(
+            $this->factory->create(RequestType::COMMIT_STATUS_UPDATE, $job, ['status' => $status->value])
+        );
     }
 
-    public function markStatusFailure(Job $job, string $reason): ResponseInterface
+    public function markStatusFailure(Config $job, string $reason): ResponseInterface
     {
         return $this->send($this->factory->create(RequestType::COMMIT_STATUS_UPDATE, $job, ['description' => $reason]));
     }
 
-    public function downloadZipArchive(Job $job): ResponseInterface
+    public function downloadZipArchive(Config $job): ResponseInterface
     {
         return $this->send($this->factory->create(RequestType::REPOSITORY_DOWNLOAD, $job));
     }

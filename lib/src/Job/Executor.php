@@ -18,27 +18,26 @@ class Executor
 
     private ?\Closure $logger = null;
 
+    private ?\Closure $onStatusChange;
+
     public function __construct(private readonly ScriptRunner $scriptRunner)
     {
     }
 
-    public function execute(\Closure $logger, Status $status, Pipeline $pipeline): void
+    public function execute(Status $status, Pipeline $pipeline, \Closure $logger, \Closure $onStatusChange): void
     {
-        $this->status   = $status;
-        $this->pipeline = $pipeline;
-        $this->logger   = $logger;
+        $this->status         = $status;
+        $this->pipeline       = $pipeline;
+        $this->logger         = $logger;
+        $this->onStatusChange = $onStatusChange;
+
         $this->loadEnv();
         $this->executePreBuildScripts();
         $this->executeBuild();
 
         if ($this->status === Status::InProgress) {
-            $this->status = Status::Success;
+            $this->changeStatus(Status::Success);
         }
-    }
-
-    public function getStatus(): Status
-    {
-        return $this->status;
     }
 
     private function loadEnv(): void
@@ -86,7 +85,7 @@ class Executor
         $this->scriptRunner->run($script, $envVars?->toArray() ?? [], $this->logger);
 
         if ($script->getStatus() === Status::Failure) {
-            $this->status = Status::Failure;
+            $this->changeStatus(Status::Failure);
         }
     }
 
@@ -96,5 +95,12 @@ class Executor
             && !$this->scriptRunner->isRunning()
             && !$script->isFinished()
             && $this->status === Status::InProgress;
+    }
+
+    private function changeStatus(Status $status): void
+    {
+        $onStatusChange = $this->onStatusChange;
+        $this->status   = $status;
+        $onStatusChange($status);
     }
 }

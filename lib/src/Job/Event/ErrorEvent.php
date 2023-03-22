@@ -2,15 +2,16 @@
 
 namespace App\Job\Event;
 
+use App\Job\Data\Config;
 use App\Job\Exception\JobException;
 use App\Job\Job;
 use App\Pipeline\Exception\PipelineException;
 
 class ErrorEvent extends JobEvent
 {
-    public function __construct(Job $job, private readonly JobException $exception)
+    public function __construct(Config $jobConfig, private readonly JobException $exception)
     {
-        parent::__construct($job);
+        parent::__construct($jobConfig);
     }
 
     public function getException(): \Throwable

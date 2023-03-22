@@ -17,8 +17,7 @@ class JobMessage extends AMQPMessage
                 [
                     'github_data' => [
                         'branch_name' => $branchName,
-                        'commit_hash' => $commitHash,
-                        'build_number' => $buildNumber,
+                        'commit_hash' => $commitHash
                     ],
                 ]
             )

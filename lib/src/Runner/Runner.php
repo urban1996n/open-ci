@@ -27,9 +27,9 @@ class Runner
 
     private function runPreExecutionTasks(Job $job): void
     {
-        $this->downloader->download($job);
-        $this->archiveManager->unpack($job);
-        $this->downloader->remove($job);
+        $this->downloader->download($job->getConfig());
+        $this->archiveManager->unpack($job->getConfig());
+        $this->downloader->remove($job->getConfig());
     }
 
     private function runJobExecutionTasks(Job $job): void
@@ -39,6 +39,6 @@ class Runner
 
     private function runPostExecutionTasks(Job $job): void
     {
-        $this->fileManager->removeDir($this->locator->getUnpackedRepoDirForJob($job));
+        $this->fileManager->removeDir($this->locator->getUnpackedRepoDirForJob($job->getConfig()));
     }
 }

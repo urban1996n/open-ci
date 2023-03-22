@@ -2,7 +2,7 @@
 
 namespace App\Resource;
 
-use App\Job\Job;
+use App\Job\Data\Config;
 
 class GithubArchiveManager
 {
@@ -15,10 +15,10 @@ class GithubArchiveManager
         $this->archive = new \ZipArchive();
     }
 
-    public function unpack(Job $job): void
+    public function unpack(Config $jobConfig): void
     {
-        if ($this->archive->open($this->locator->getTemporaryRepoArchiveFile($job)) === true) {
-            $this->fileManager->createDirectory($jobExecDir = $this->locator->getExecDirForJob($job));
+        if ($this->archive->open($this->locator->getTemporaryRepoArchiveFile($jobConfig)) === true) {
+            $this->fileManager->createDirectory($jobExecDir = $this->locator->getExecDirForJob($jobConfig));
             $this->archive->extractTo($jobExecDir);
             $this->archive->close();
         } else {

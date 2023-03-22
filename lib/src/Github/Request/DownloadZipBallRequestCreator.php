@@ -2,6 +2,7 @@
 
 namespace App\Github\Request;
 
+use App\Job\Data\Config;
 use App\Job\Job;
 
 class DownloadZipBallRequestCreator extends AbstractGithubRequestCreator
@@ -23,7 +24,7 @@ class DownloadZipBallRequestCreator extends AbstractGithubRequestCreator
 
     protected function getUri(?object $subject): string
     {
-        /** @var Job $subject */
+        /** @var Config $subject */
 
         return \strtr(
             'repos/{owner}/{repo}/zipball/{ref}',
@@ -33,6 +34,6 @@ class DownloadZipBallRequestCreator extends AbstractGithubRequestCreator
 
     public function supports(RequestType $type, ?object $subject): bool
     {
-        return $type === RequestType::REPOSITORY_DOWNLOAD && $subject instanceof Job && !$subject->isFinished();
+        return $type === RequestType::REPOSITORY_DOWNLOAD && $subject instanceof Config;
     }
 }

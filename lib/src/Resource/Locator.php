@@ -2,8 +2,7 @@
 
 namespace App\Resource;
 
-use App\Job\Job;
-use Symfony\Component\Config\FileLocator;
+use App\Job\Data\Config;
 
 class Locator
 {
@@ -24,38 +23,38 @@ class Locator
         return $this->rootDir . '/../src';
     }
 
-    public function getTempDirForJob(Job $job): string
+    public function getTempDirForJob(Config $jobConfig): string
     {
-        return $this->locateTempDir() . '/' . $this->buildDestinationPath($job);
+        return $this->locateTempDir() . '/' . $this->buildDestinationPath($jobConfig);
     }
 
-    public function getTemporaryRepoArchiveFile(Job $job): string
+    public function getTemporaryRepoArchiveFile(Config $jobConfig): string
     {
-        return $this->getTempDirForJob($job) . '/' . $job->getIdentifier() . '.zip';
+        return $this->getTempDirForJob($jobConfig) . '/' . $jobConfig->getIdentifier() . '.zip';
     }
 
-    public function getExecDirForJob(Job $job): string
+    public function getExecDirForJob(Config $jobConfig): string
     {
-        return $this->locateExecDir() . '/' . $this->buildDestinationPath($job);
+        return $this->locateExecDir() . '/' . $this->buildDestinationPath($jobConfig);
     }
 
-    public function getUnpackedRepoDirForJob(Job $job): string
+    public function getUnpackedRepoDirForJob(Config $jobConfig): string
     {
-        return $this->getExecDirForJob($job)
-            . '/' . $this->githubOwner . '-' . $this->githubRepository . '-' . $job->getCurrentCommit();
+        return $this->getExecDirForJob($jobConfig)
+            . '/' . $this->githubOwner . '-' . $this->githubRepository . '-' . $jobConfig->getCommitHash();
     }
 
-    public function getPipelineFileForJob(Job $job): string
+    public function getPipelineFileForJob(Config $jobConfig): string
     {
-        return $this->getUnpackedRepoDirForJob($job) . '/pipeline.json';
+        return $this->getUnpackedRepoDirForJob($jobConfig) . '/pipeline.json';
     }
 
-    private function buildDestinationPath(Job $job): string
+    private function buildDestinationPath(Config $jobConfig): string
     {
         return $this->githubOwner
             . '/' . $this->githubRepository
-            . '/' . $job->getBranch()
-            . '/' . $job->getCurrentCommit()
-            . '/' . $job->getBuildNumber();
+            . '/' . $jobConfig->getBranch()
+            . '/' . $jobConfig->getCommitHash()
+            . '/' . $jobConfig->getBuildNumber();
     }
 }
