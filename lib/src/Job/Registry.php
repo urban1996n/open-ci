@@ -30,9 +30,13 @@ class Registry
         $this->semaphore  = $semaphore->get();
     }
 
-    public function add(Config $jobConfig): void
+    public function tryAdd(Config $jobConfig): void
     {
         $do = function () use ($jobConfig) {
+            if ($this->inQueue($jobConfig)) {
+                return;
+            }
+
             if (!$this->has($jobConfig)) {
                 $this->jobs[$jobConfig->getBranch()] = new Queue();
             }
