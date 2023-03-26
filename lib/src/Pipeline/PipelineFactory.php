@@ -11,24 +11,17 @@ class PipelineFactory
 
     private SchemaValidator $validator;
 
-    private string $pipelinePath;
-
-    public function __construct(
-        SchemaValidator $validator,
-        Assembler $pipelineAssembler,
-        string $pipelinePath,
-        string $rootDir
-    ) {
+    public function __construct(SchemaValidator $validator, Assembler $pipelineAssembler)
+    {
         $this->pipelineAssembler = $pipelineAssembler;
         $this->validator         = $validator;
-        $this->pipelinePath      = $rootDir . '/' . $pipelinePath;
     }
 
     /** @throws PipelineException */
-    public function create(): Pipeline
+    public function create(string $pipelinePath): Pipeline
     {
-        $this->validator->validate($this->pipelinePath);
+        $this->validator->validate($pipelinePath);
 
-        return $this->pipelineAssembler->assemble(\json_decode(\file_get_contents($this->pipelinePath), true));
+        return $this->pipelineAssembler->assemble(\json_decode(\file_get_contents($pipelinePath), true));
     }
 }

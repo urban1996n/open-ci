@@ -8,7 +8,6 @@ use App\Pipeline\Data\Component\Script;
 use App\Pipeline\Data\Component\Stage;
 use App\Pipeline\Data\Component\Step;
 use App\Pipeline\Data\Pipeline;
-use App\Pipeline\PipelineFactory;
 use Symfony\Component\Dotenv\Dotenv;
 
 class Executor
@@ -19,26 +18,26 @@ class Executor
 
     private ?\Closure $logger = null;
 
-    public function __construct(private readonly PipelineFactory $factory, private readonly ScriptRunner $scriptRunner)
+    private ?\Closure $onStatusChange;
+
+    public function __construct(private readonly ScriptRunner $scriptRunner)
     {
     }
 
-    public function execute(\Closure $logger): void
+    public function execute(Status $status, Pipeline $pipeline, \Closure $logger, \Closure $onStatusChange): void
     {
-        $this->pipeline = $this->factory->create();
-        $this->logger   = $logger;
+        $this->status         = $status;
+        $this->pipeline       = $pipeline;
+        $this->logger         = $logger;
+        $this->onStatusChange = $onStatusChange;
+
         $this->loadEnv();
         $this->executePreBuildScripts();
         $this->executeBuild();
 
         if ($this->status === Status::InProgress) {
-            $this->status = Status::Success;
+            $this->changeStatus(Status::Success);
         }
-    }
-
-    public function getStatus(): Status
-    {
-        return $this->status;
     }
 
     private function loadEnv(): void
@@ -86,7 +85,7 @@ class Executor
         $this->scriptRunner->run($script, $envVars?->toArray() ?? [], $this->logger);
 
         if ($script->getStatus() === Status::Failure) {
-            $this->status = Status::Failure;
+            $this->changeStatus(Status::Failure);
         }
     }
 
@@ -95,6 +94,13 @@ class Executor
         return $script->getStatus() !== Status::Failure
             && !$this->scriptRunner->isRunning()
             && !$script->isFinished()
-            && $this->status === Status::Pending;
+            && $this->status === Status::InProgress;
+    }
+
+    private function changeStatus(Status $status): void
+    {
+        $onStatusChange = $this->onStatusChange;
+        $this->status   = $status;
+        $onStatusChange($status);
     }
 }

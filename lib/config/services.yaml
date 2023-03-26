@@ -6,7 +6,7 @@ services:
     autoconfigure: true
     public: false
     bind:
-      $rootDir: '%application.root_dir%'
+      $rootDir: '%kernel.project_dir%'
       $githubOwner: '%github_owner%'
       $githubRepository: '%github_repository%'
 
@@ -30,21 +30,30 @@ services:
     class: App\Job\Executor
     arguments: [ '@pipeline_factory', '@script_runner' ]
 
-  amqp_connection:
-    class: App\AMQP\Connection
+  App\AMQP\Connection:
     arguments: [ '%env(AMQP_HOST)%', '%env(AMQP_PORT)%', '%env(AMQP_USER)%', '%env(AMQP_PASSWORD)%' ]
+    lazy: true
+
+  App\AMQP\AbstractConsumer:
+    lazy: true
+
+  App\AMQP\AbstractMessenger:
+    lazy: true
+
+  App\Storage\Redis:
+    arguments:
+      $redisUrl: '%env(REDIS_URL)%'
+    lazy: true
+
+  App\Common\Decorator\JobRegistrySemaphore:
 
   logger_factory:
     class: App\Job\Logger\LoggerFactory
 
   pipeline_command:
     class: App\Command\RunPipelineCommand
+    public: true
 
   App\Github\HttpClient:
     arguments:
       $githubApiToken: '%github_api_token%'
-
-  Application:
-    class: Application
-    arguments: [ [ '@pipeline_command' ] ]
-    public: true

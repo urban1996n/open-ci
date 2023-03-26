@@ -7,5 +7,5 @@ use Psr\Http\Message\RequestInterface;
 interface RequestCreatorInterface
 {
     public function supports(RequestType $type, ?object $subject): bool;
-    public function create(RequestType $type, ?object $subject): RequestInterface;
+    public function create(RequestType $type, ?object $subject, array $context = []): RequestInterface;
 }

@@ -9,10 +9,22 @@ class Connection extends AMQPStreamConnection
 {
     private ?AMQPChannel $currentChannel = null;
 
-    public function defineQueues(): void
+    private array $queues    = [];
+    private array $exchanges = [];
+
+    private function defineQueues(): void
     {
         foreach (Queue::cases() as $queue) {
-            $this->currentChannel->queue_declare($queue, true);
+            $this->currentChannel->queue_declare($queue->value);
+            $this->queues[] = $queue->value;
+        }
+    }
+
+    private function defineExchanges(): void
+    {
+        foreach (Exchange::cases() as $exchange) {
+            $this->currentChannel->exchange_declare($exchange->value, 'fanout');
+            $this->exchanges[] = $exchange->value;
         }
     }
 
@@ -22,10 +34,23 @@ class Connection extends AMQPStreamConnection
 
         $this->currentChannel = $this->currentChannel ?: $this->channel();
         $this->defineQueues();
+        $this->defineExchanges();
     }
 
     public function getCurrentChannel(): AMQPChannel
     {
         return $this->currentChannel;
+    }
+
+    public function isInitialized(): bool
+    {
+        return \count($this->exchanges) === \count(Exchange::cases())
+            && \count($this->queues) === \count(Queue::cases());
+    }
+
+    public function tearDown(): void
+    {
+        $this->getCurrentChannel()->close();
+        $this->close();
     }
 }

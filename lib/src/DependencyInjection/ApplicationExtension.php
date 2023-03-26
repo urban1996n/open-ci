@@ -13,9 +13,9 @@ class ApplicationExtension implements ExtensionInterface
 {
     private FileLocator $fileLocator;
 
-    public function __construct()
+    public function __construct(string $rootDir)
     {
-        $this->fileLocator = new FileLocator(\Application::getRootDirectory() . '/config');
+        $this->fileLocator = new FileLocator($rootDir . '/config');
     }
 
     public function getAlias()
@@ -30,13 +30,14 @@ class ApplicationExtension implements ExtensionInterface
 
     public function getNamespace()
     {
-        return false;
+        return 'ci_cd';
     }
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $this->buildContainer($container);
+        $this->loadConfiguration($container);
         $this->registerServices($container);
+        $this->loadEnv();
     }
 
     private function registerServices(ContainerBuilder $container): void
@@ -45,9 +46,14 @@ class ApplicationExtension implements ExtensionInterface
             ->addTag(GithubCompilerPass::SERVICE_TAG_REQUEST_CREATOR);
     }
 
-    private function buildContainer(ContainerBuilder $container)
+    private function loadConfiguration(ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, $this->fileLocator);
         $loader->load('services.yaml');
+    }
+
+    private function loadEnv(): void
+    {
+        (new Dotenv())->load($this->fileLocator->locate('.env'));
     }
 }
