@@ -4,24 +4,14 @@ namespace App\Job\Event;
 
 use App\Github\HttpClient;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 #[AsEventListener(event: 'job.event.error', method: 'onJobError')]
 #[AsEventListener(event: 'job.event.created', method: 'onJobCreated')]
 #[AsEventListener(event: 'job.event.status_change', method: 'onJobStatusChange')]
-class JobEventsSubscriber implements EventSubscriberInterface
+class JobEventsSubscriber
 {
     public function __construct(private readonly HttpClient $client)
     {
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            ErrorEvent::class        => 'onJobError',
-            CreatedEvent::class      => 'onJobCreated',
-            StatusChangeEvent::class => 'onJobStatusChange',
-        ];
     }
 
     public function onJobError(ErrorEvent $event): void
