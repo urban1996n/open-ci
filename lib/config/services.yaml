@@ -43,6 +43,7 @@ services:
   App\Storage\Redis:
     arguments:
       $redisUrl: '%env(REDIS_URL)%'
+      $redisPassword: '%env(REDIS_PASSWORD)%'
     lazy: true
 
   App\Common\Decorator\JobRegistrySemaphore:
