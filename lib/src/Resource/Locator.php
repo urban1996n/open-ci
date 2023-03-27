@@ -20,7 +20,7 @@ class Locator
 
     public function locateExecDir(): string
     {
-        return $this->rootDir . '/../src';
+        return $this->rootDir . '/exec';
     }
 
     public function getTempDirForJob(Config $jobConfig): string

@@ -20,15 +20,11 @@ class ActionResolver
             usleep(10);
         }
 
-//         We do not want to requeue the same build, same identifier means same commit, and same build number;
-        if ($this->registry->inQueue($jobConfig)) {
-            dump('in progress');
-
-            return;
+        $this->registry->tryAdd($jobConfig);
+        try {
+            $this->runner->run($this->jobFactory->create($this->registry->next($jobConfig)));
+        } finally {
+            $this->registry->release($jobConfig);
         }
-
-        $this->registry->add($jobConfig);
-        $this->runner->run($this->jobFactory->create($this->registry->next($jobConfig)));
-        $this->registry->release($jobConfig);
     }
 }

@@ -9,6 +9,8 @@ use Monolog\Logger as BaseLogger;
 class Logger extends BaseLogger
 {
     public function __construct(
+        private readonly string $owner,
+        private readonly string $repo,
         private readonly string $rootDir,
         private readonly string $branch,
         private readonly string $commitHash,
@@ -23,12 +25,11 @@ class Logger extends BaseLogger
     {
         return $this->rootDir
             . '/'
-            . '../var/'
-            . $this->branch
-            . '/'
-            . $this->commitHash
-            . '/'
-            . $this->buildNumber
-            . '.log';
+            . '../logs/'
+            . $this->owner . '/'
+            . $this->repo . '/'
+            . $this->branch . '/'
+            . $this->commitHash . '/'
+            . $this->buildNumber . '.log';
     }
 }
