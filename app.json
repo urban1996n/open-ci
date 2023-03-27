@@ -1,0 +1,13 @@
+{
+  "name": "CI-CD system",
+  "description": "Simple cicd",
+  "repository": "https://github.com/wkluz/ci-cd-system.git",
+  "buildpacks": [
+    {
+      "url": "https:////github.com/dockhero/heroku-buildpack-docker-compose.git"
+    }
+  ],
+  "release": {
+    "staging": "cd lib && docker-compose up -d --build"
+    "production": "cd lib && docker-compose up -d"
+  }
