@@ -24,8 +24,7 @@ class Logger extends BaseLogger
     private function composeStreamPath(): string
     {
         return $this->rootDir
-            . '/'
-            . '../logs/'
+            . '/logs'
             . $this->owner . '/'
             . $this->repo . '/'
             . $this->branch . '/'
