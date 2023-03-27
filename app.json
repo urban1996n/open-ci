@@ -4,9 +4,12 @@
   "repository": "https://github.com/wkluz/ci-cd-system.git",
   "buildpacks": [
     {
-      "url": "https:////github.com/dockhero/heroku-buildpack-docker-compose.git"
+      "url": "https://github.com/dockhero/heroku-buildpack-docker-compose.git"
     }
   ],
+   "scripts": {
+    "postdeploy": "cd lib && docker-compose up -d --build",
+  }
   "release": {
     "staging": "cd lib && docker-compose up -d --build"
     "production": "cd lib && docker-compose up -d"
