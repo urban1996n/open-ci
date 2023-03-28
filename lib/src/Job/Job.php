@@ -39,7 +39,7 @@ class Job implements JobConfigAwareInterface
         try {
             $this->executor->execute(
                 $this->status,
-                $this->pipelineFactory->create($this->locator->getPipelineFileForJob($this->getConfig())),
+                $this->pipelineFactory->create($this->locator->locatePipelineFileFor($this->getConfig())),
                 $logger,
                 $this->changeStatusCallback(),
             );

@@ -20,33 +20,38 @@ class Locator
 
     public function locateExecDir(): string
     {
-        return $this->rootDir . '/exec';
+        return $this->locateTempDir() . '/exec';
     }
 
-    public function getTempDirForJob(Config $jobConfig): string
+    public function locateTempDirFor(Config $jobConfig): string
     {
         return $this->locateTempDir() . '/' . $this->buildDestinationPath($jobConfig);
     }
 
-    public function getTemporaryRepoArchiveFile(Config $jobConfig): string
+    public function locateTemporaryRepoArchiveFile(Config $jobConfig): string
     {
-        return $this->getTempDirForJob($jobConfig) . '/' . $jobConfig->getIdentifier() . '.zip';
+        return $this->locateTempDirFor($jobConfig) . '/' . $jobConfig->getIdentifier() . '.zip';
     }
 
-    public function getExecDirForJob(Config $jobConfig): string
+    public function renameExecDirFor(Config $jobConfig): string
     {
         return $this->locateExecDir() . '/' . $this->buildDestinationPath($jobConfig);
     }
 
-    public function getUnpackedRepoDirForJob(Config $jobConfig): string
+    public function locateUnpackedRepoDirFor(Config $jobConfig): string
     {
-        return $this->getExecDirForJob($jobConfig)
-            . '/' . $this->githubOwner . '-' . $this->githubRepository . '-' . $jobConfig->getCommitHash();
+        return $this->renameExecDirFor($jobConfig) . '/' . $this->githubOwner . '-' . $this->githubRepository . '-'
+            . $jobConfig->getCommitHash();
     }
 
-    public function getPipelineFileForJob(Config $jobConfig): string
+    public function locatePipelineFileFor(Config $jobConfig): string
     {
-        return $this->getUnpackedRepoDirForJob($jobConfig) . '/pipeline.json';
+        return $this->locateUnpackedRepoDirFor($jobConfig) . '/pipeline.json';
+    }
+
+    public function locateLogFilePathFor(Config $jobConfig): string
+    {
+        return $this->rootDir . '/logs/' . $this->buildDestinationPath($jobConfig);
     }
 
     private function buildDestinationPath(Config $jobConfig): string
