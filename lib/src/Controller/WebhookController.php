@@ -15,11 +15,12 @@ class WebhookController extends AbstractController
     #[Route('/webhook', methods: ['POST'])]
     public function githubWebhook(Request $request, JobMessenger $jobMessenger): Response
     {
-        $requestBody = \json_decode($request->getContent(), true, \JSON_THROW_ON_ERROR);
-        $commit      = $requestBody['after'];
-        $branch      = \explode('/', $requestBody['ref']);
+        $input = $request->request;
 
-        $message = new JobMessage(\array_pop($branch), $commit);
+        $commit = $input->get('after');
+        $branch = \explode('/', $request->get('ref'));
+
+        $message = new JobMessage(\end($branch), $commit);
         $jobMessenger->send($message);
 
         return new Response();
