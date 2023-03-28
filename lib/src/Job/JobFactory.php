@@ -29,7 +29,7 @@ class JobFactory
 
     public function create(Config $config): ?Job
     {
-        $logger = $this->factory->create($config->getBranch(), $config->getCommitHash(), $config->getBuildNumber());
+        $logger = $this->factory->create($config);
         $job    = null;
 
         try {

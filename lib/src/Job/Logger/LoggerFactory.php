@@ -2,16 +2,18 @@
 
 namespace App\Job\Logger;
 
+use App\Job\Data\Config;
 use App\Job\Job;
+use App\Resource\Locator;
 
 class LoggerFactory
 {
-    public function __construct(private readonly string $rootDir)
+    public function __construct(private readonly Locator $locator)
     {
     }
 
-    public function create(string $branch, string $commitHash, int $buildNumber): Logger
+    public function create(Config $config): Logger
     {
-        return new Logger($this->rootDir, $branch, $commitHash, $buildNumber);
+        return new Logger($this->locator->locateLogFilePathFor($config));
     }
 }
