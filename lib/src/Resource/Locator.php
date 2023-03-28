@@ -51,7 +51,7 @@ class Locator
 
     public function locateLogFilePathFor(Config $jobConfig): string
     {
-        return $this->rootDir . '/logs/' . $this->buildDestinationPath($jobConfig);
+        return $this->locateTempDir() . '/logs/' . $this->buildDestinationPath($jobConfig);
     }
 
     private function buildDestinationPath(Config $jobConfig): string
