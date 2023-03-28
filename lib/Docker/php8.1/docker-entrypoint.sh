@@ -8,4 +8,6 @@ php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/
 
 #[Run supervisor service]
 supervisord -c /etc/supervisor/supervisord.conf
+
+#[Run php fpm listen]
 /usr/local/sbin/php-fpm
