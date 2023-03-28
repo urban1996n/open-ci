@@ -30,7 +30,21 @@ class Connection extends AMQPStreamConnection
 
     public function __construct(string $amqpHost, int $amqpPort, string $amqpUser, string $amqpPassword)
     {
-        parent::__construct($amqpHost, $amqpPort, $amqpUser, $amqpPassword);
+        parent::__construct(
+            $amqpHost,
+            $amqpPort,
+            $amqpUser,
+            $amqpPassword,
+            '/',
+            false,
+            'AMQPLAIN',
+            null,
+            'pl_PL',
+            120,
+            120,
+            null,
+            true
+        );
 
         $this->currentChannel = $this->currentChannel ?: $this->channel();
         $this->defineQueues();
@@ -46,11 +60,5 @@ class Connection extends AMQPStreamConnection
     {
         return \count($this->exchanges) === \count(Exchange::cases())
             && \count($this->queues) === \count(Queue::cases());
-    }
-
-    public function tearDown(): void
-    {
-        $this->getCurrentChannel()->close();
-        $this->close();
     }
 }
