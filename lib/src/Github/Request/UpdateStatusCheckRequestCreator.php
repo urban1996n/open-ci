@@ -20,7 +20,14 @@ class UpdateStatusCheckRequestCreator extends AbstractStatusRequestCreator
 
     protected function getRequestBody(?object $subject, array $context = []): array
     {
-        /** @var Config $subject */
-        return parent::getRequestBody($subject) + ['state' => $context['status'] ?? Status::Failure->value];
+        if (!$subject instanceof Config) {
+            throw new \RuntimeException();
+        }
+
+        return parent::getRequestBody($subject) +
+            [
+                'state'       => $context['status'] ?? Status::Failure->value,
+                'details_url' => $this->getDetailsUrlFor($subject),
+            ];
     }
 }
