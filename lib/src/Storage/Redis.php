@@ -11,6 +11,5 @@ class Redis extends BaseRedis
         parent::__construct();
 
         $this->connect($this->redisUrl);
-        $this->auth($redisPassword);
     }
 }
