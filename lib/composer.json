@@ -51,9 +51,6 @@
         }
     },
     "autoload-dev": {
-        "psr-4": {
-            "App\\Tests\\": "tests/"
-        }
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
