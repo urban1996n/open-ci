@@ -31,7 +31,7 @@ class RunPipelineCommand extends Command
         $this->consumer = $consumer;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $consumeJobMessage = function (AMQPMessage $message) use ($input, $output): void {
             try {
