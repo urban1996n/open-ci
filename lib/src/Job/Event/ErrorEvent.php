@@ -4,8 +4,6 @@ namespace App\Job\Event;
 
 use App\Job\Data\Config;
 use App\Job\Exception\JobException;
-use App\Job\Job;
-use App\Pipeline\Exception\PipelineException;
 
 class ErrorEvent extends JobEvent
 {

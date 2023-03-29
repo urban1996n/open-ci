@@ -5,7 +5,8 @@ namespace App\Common\Event;
 use App\Job\Event\ErrorEvent;
 use App\Job\Event\JobEvents;
 use App\Job\Exception\JobException;
-use App\Pipeline\Exception\PipelineException;
+use App\Storage\Redis;
+use PhpAmqpLib\Exception\AMQPIOException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
@@ -27,15 +28,6 @@ class ExceptionEventListener
     {
         $exception = $event->getThrowable();
         $this->logger->error($exception->getMessage());
-
-        if ($exception instanceof JobException && $exception->getJob()) {
-            $this->dispatcher->dispatch(
-                new ErrorEvent($exception->getJob()->getConfig(), $exception),
-                JobEvents::JOB_ERROR->value
-            );
-        }
-
-        $event->setResponse(new Response());
     }
 
     public function onConsoleError(ConsoleErrorEvent $event): void

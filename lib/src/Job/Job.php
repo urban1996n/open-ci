@@ -9,7 +9,6 @@ use App\Job\Event\JobEvents;
 use App\Job\Event\StatusChangeEvent;
 use App\Job\Exception\JobRunException;
 use App\Job\Logger\Logger;
-use App\Pipeline\Exception\PipelineException;
 use App\Pipeline\PipelineFactory;
 use App\Resource\Locator;
 use Monolog\Level;

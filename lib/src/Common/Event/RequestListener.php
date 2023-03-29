@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Request;
+namespace App\Common\Event;
 
+use App\Request\JsonToInputBagDecorator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 

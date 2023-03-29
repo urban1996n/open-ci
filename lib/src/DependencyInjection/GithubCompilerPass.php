@@ -3,12 +3,9 @@
 namespace App\DependencyInjection;
 
 use App\Github\Request\RequestFactory;
-use App\Pipeline\Exception\MissingEnvVariableException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use function Symfony\Component\String\b;
 
 class GithubCompilerPass implements CompilerPassInterface
 {

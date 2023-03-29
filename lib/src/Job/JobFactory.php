@@ -10,10 +10,6 @@ use App\Job\Exception\JobCreationException;
 use App\Job\Logger\LoggerFactory;
 use App\Pipeline\PipelineFactory;
 use App\Resource\Locator;
-use Symfony\Component\Console\Event\ConsoleErrorEvent;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobFactory

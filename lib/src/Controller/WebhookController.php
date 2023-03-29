@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\AMQP\JobMessage;
 use App\Http\JobMessenger;
-use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +17,7 @@ class WebhookController extends AbstractController
         $input = $request->request;
 
         $commit = $input->get('after');
-        $branch = \explode('/', $request->get('ref'));
+        $branch = \explode('/', $input->get('ref'));
 
         $message = new JobMessage(\end($branch), $commit);
         $jobMessenger->send($message);

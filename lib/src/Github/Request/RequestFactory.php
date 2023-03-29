@@ -3,7 +3,6 @@
 namespace App\Github\Request;
 
 use Psr\Http\Message\RequestInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 class RequestFactory
 {
