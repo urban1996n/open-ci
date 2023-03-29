@@ -9,7 +9,7 @@ class JobMessage extends AMQPMessage
 {
     public function __construct(string $branchName, string $commitHash, int $buildNumber = 1)
     {
-        parent::__construct('');
+        parent::__construct();
 
         $this->set(
             'application_headers',
