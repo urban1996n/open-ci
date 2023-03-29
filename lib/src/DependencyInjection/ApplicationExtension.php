@@ -18,17 +18,17 @@ class ApplicationExtension implements ExtensionInterface
         $this->fileLocator = new FileLocator($rootDir . '/config');
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'ci_cd';
     }
 
-    public function getXsdValidationBasePath()
+    public function getXsdValidationBasePath(): string | false
     {
         return false;
     }
 
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return 'ci_cd';
     }
@@ -37,7 +37,6 @@ class ApplicationExtension implements ExtensionInterface
     {
         $this->loadConfiguration($container);
         $this->registerServices($container);
-        $this->loadEnv();
     }
 
     private function registerServices(ContainerBuilder $container): void
@@ -50,10 +49,5 @@ class ApplicationExtension implements ExtensionInterface
     {
         $loader = new YamlFileLoader($container, $this->fileLocator);
         $loader->load('services.yaml');
-    }
-
-    private function loadEnv(): void
-    {
-        (new Dotenv())->load($this->fileLocator->locate('.env'));
     }
 }

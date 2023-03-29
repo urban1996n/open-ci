@@ -2,19 +2,24 @@
 
 namespace App\Common\Event;
 
+use App\AMQP\Event\AmqpEvents;
+use App\AMQP\Event\AmqpExceptionEvent;
 use App\Job\Event\ErrorEvent;
 use App\Job\Event\JobEvents;
 use App\Job\Exception\JobException;
-use App\Pipeline\Exception\PipelineException;
+use App\Storage\Redis;
+use PhpAmqpLib\Exception\AMQPExceptionInterface;
+use PhpAmqpLib\Exception\AMQPIOException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-#[AsEventListener(event: 'kernel.exception', method: 'onKernelException')]
-#[AsEventListener(event: 'console.error', method: 'onConsoleError')]
+#[AsEventListener(event: KernelEvents::EXCEPTION, method: 'onKernelException')]
+#[AsEventListener(event: ConsoleEvents::ERROR, method: 'onConsoleError')]
 class ExceptionEventListener
 {
     public function __construct(
@@ -28,14 +33,10 @@ class ExceptionEventListener
         $exception = $event->getThrowable();
         $this->logger->error($exception->getMessage());
 
-        if ($exception instanceof JobException && $exception->getJob()) {
-            $this->dispatcher->dispatch(
-                new ErrorEvent($exception->getJob()->getConfig(), $exception),
-                JobEvents::JOB_ERROR->value
-            );
+        if ($exception instanceof AMQPExceptionInterface) {
+            $event = new AmqpExceptionEvent($event->getRequest(), $exception);
+            $this->dispatcher->dispatch($event, AmqpEvents::AMQP_EXCEPTION);
         }
-
-        $event->setResponse(new Response());
     }
 
     public function onConsoleError(ConsoleErrorEvent $event): void
@@ -46,7 +47,7 @@ class ExceptionEventListener
         if ($exception instanceof JobException && $exception->getJob()) {
             $this->dispatcher->dispatch(
                 new ErrorEvent($exception->getJob()->getConfig(), $exception),
-                JobEvents::JOB_ERROR->value
+                JobEvents::JOB_ERROR
             );
         }
 

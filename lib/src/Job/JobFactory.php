@@ -10,10 +10,6 @@ use App\Job\Exception\JobCreationException;
 use App\Job\Logger\LoggerFactory;
 use App\Pipeline\PipelineFactory;
 use App\Resource\Locator;
-use Symfony\Component\Console\Event\ConsoleErrorEvent;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobFactory
@@ -29,7 +25,7 @@ class JobFactory
 
     public function create(Config $config): ?Job
     {
-        $logger = $this->factory->create($config->getBranch(), $config->getCommitHash(), $config->getBuildNumber());
+        $logger = $this->factory->create($config);
         $job    = null;
 
         try {
@@ -44,12 +40,12 @@ class JobFactory
 
             $this->dispatcher->dispatch(
                 new CreatedEvent($config),
-                JobEvents::JOB_CREATED->value
+                JobEvents::JOB_CREATED
             );
         } catch (\Throwable $exception) {
             $this->dispatcher->dispatch(
                 new ErrorEvent($config, new JobCreationException($exception->getMessage(), null)),
-                JobEvents::JOB_ERROR->value
+                JobEvents::JOB_ERROR
             );
         }
 

@@ -27,7 +27,6 @@ class ScriptRunner
         $this->output = new ConsoleOutput();
     }
 
-    /** @param \Closure<int, string> */
     public function run(Script $script, array $env, \Closure $logger): void
     {
         $this->logger = $logger;

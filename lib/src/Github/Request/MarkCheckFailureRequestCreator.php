@@ -2,6 +2,8 @@
 
 namespace App\Github\Request;
 
+use App\Job\Data\Config;
+
 class MarkCheckFailureRequestCreator extends AbstractStatusRequestCreator
 {
     public function supports(RequestType $type, ?object $subject): bool
@@ -16,6 +18,10 @@ class MarkCheckFailureRequestCreator extends AbstractStatusRequestCreator
 
     protected function getRequestBody(?object $subject, array $context = []): array
     {
-        return parent::getRequestBody($subject) + ['state' => 'failure'];
+        if (!$subject instanceof Config) {
+            throw new \RuntimeException();
+        }
+
+        return parent::getRequestBody($subject) + ['state' => 'failure', 'details_url' => $this->getDetailsUrlFor($subject)];
     }
 }

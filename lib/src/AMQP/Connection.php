@@ -2,8 +2,11 @@
 
 namespace App\AMQP;
 
+use App\AMQP\Event\AmqpEvents;
+use App\AMQP\Event\AmqpIOConnectionEvent;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Connection extends AMQPStreamConnection
 {
@@ -28,13 +31,33 @@ class Connection extends AMQPStreamConnection
         }
     }
 
-    public function __construct(string $amqpHost, int $amqpPort, string $amqpUser, string $amqpPassword)
-    {
-        parent::__construct($amqpHost, $amqpPort, $amqpUser, $amqpPassword);
+    public function __construct(
+        string $amqpHost,
+        int $amqpPort,
+        string $amqpUser,
+        string $amqpPassword,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        parent::__construct(
+            $amqpHost,
+            $amqpPort,
+            $amqpUser,
+            $amqpPassword,
+            '/',
+            false,
+            'AMQPLAIN',
+            null,
+            'pl_PL',
+            120,
+            120,
+            null,
+            true
+        );
 
         $this->currentChannel = $this->currentChannel ?: $this->channel();
         $this->defineQueues();
         $this->defineExchanges();
+        $eventDispatcher->dispatch(new AmqpIOConnectionEvent(), AmqpEvents::AMQP_IO_CONNECTION);
     }
 
     public function getCurrentChannel(): AMQPChannel
@@ -46,11 +69,5 @@ class Connection extends AMQPStreamConnection
     {
         return \count($this->exchanges) === \count(Exchange::cases())
             && \count($this->queues) === \count(Queue::cases());
-    }
-
-    public function tearDown(): void
-    {
-        $this->getCurrentChannel()->close();
-        $this->close();
     }
 }

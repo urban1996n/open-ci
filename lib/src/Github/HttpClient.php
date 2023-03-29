@@ -6,13 +6,7 @@ use App\Common\Status;
 use App\Github\Request\RequestFactory;
 use App\Github\Request\RequestType;
 use App\Job\Data\Config;
-use App\Job\Job;
-use App\Pipeline\Exception\PipelineException;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Exception\TransferException;
 use Psr\Http\Message\ResponseInterface;
 
 class HttpClient extends Client

@@ -9,16 +9,16 @@ services:
         RABBITMQ_USER: "$RABBITMQ_DEFAULT_USER"
         RABBITMQ_PASSWORD: "$RABBITMQ_DEFAULT_PASS"
         RUNNERS_COUNT: "$RUNNERS_COUNT"
+    depends_on:
+      - rabbitmq
+      - redis
     networks:
       - exec_internal
       - proxy
     volumes:
-      - ./src:/var/app/src
-      - ./config:/var/app/config
-      - ./public:/var/app/public
-      - ./bin:/var/app/bin
-      - ./composer.json:/var/app/composer.json
-      - ./.env:/var/app/.env
+      - .:/var/app
+      - /var/app/vendor
+    restart: always
 
   apache2:
     container_name: listener
@@ -33,6 +33,7 @@ services:
       - php8.1
     networks:
       - proxy
+    restart: always
 
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
@@ -42,6 +43,7 @@ services:
     container_name: rabbitmq
     networks:
       - exec_internal
+    restart: always
 
   redis:
     image: redis/redis-stack-server:6.2.0
@@ -53,6 +55,7 @@ services:
       - exec_internal
     volumes:
       - ./Docker/redis/data:/data
+    restart: always
 
 networks:
   exec_internal:

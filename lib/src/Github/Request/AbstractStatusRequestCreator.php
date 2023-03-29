@@ -3,10 +3,20 @@
 namespace App\Github\Request;
 
 use App\Job\Data\Config;
-use App\Job\Job;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
 {
+    private RouterInterface $router;
+
+    #[Required]
+    public function setRouter(RouterInterface $router): void
+    {
+        $this->router = $router;
+    }
+
     public function supports(RequestType $type, ?object $subject): bool
     {
         return $subject instanceof Config;
@@ -33,6 +43,19 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
                 '{repo}'  => $this->githubRepository,
                 '{sha}'   => $subject->getCommitHash(),
             ]
+        );
+    }
+
+    protected function getDetailsUrlFor(Config $job): string
+    {
+        return $this->router->generate(
+            'download_log',
+            [
+                'branch'      => $job->getBranch(),
+                'commitHash'  => $job->getCommitHash(),
+                'buildNumber' => $job->getBuildNumber(),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
     }
 }

@@ -9,7 +9,6 @@ use App\Job\Event\JobEvents;
 use App\Job\Event\StatusChangeEvent;
 use App\Job\Exception\JobRunException;
 use App\Job\Logger\Logger;
-use App\Pipeline\Exception\PipelineException;
 use App\Pipeline\PipelineFactory;
 use App\Resource\Locator;
 use Monolog\Level;
@@ -39,7 +38,7 @@ class Job implements JobConfigAwareInterface
         try {
             $this->executor->execute(
                 $this->status,
-                $this->pipelineFactory->create($this->locator->getPipelineFileForJob($this->getConfig())),
+                $this->pipelineFactory->create($this->locator->locatePipelineFileFor($this->getConfig())),
                 $logger,
                 $this->changeStatusCallback(),
             );
@@ -56,7 +55,7 @@ class Job implements JobConfigAwareInterface
             $this->status = $status;
             $this->dispatcher->dispatch(
                 new StatusChangeEvent($this->getConfig(), $status),
-                JobEvents::JOB_STATUS_CHANGE->value
+                JobEvents::JOB_STATUS_CHANGE
             );
         };
     }

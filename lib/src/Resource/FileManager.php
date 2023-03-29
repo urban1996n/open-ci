@@ -6,35 +6,25 @@ class FileManager
 {
     public function createDirectory(string $destinationPath): void
     {
-        $currentDir = '';
-        foreach (\explode('/', $destinationPath) as $directory) {
-            if (\is_dir($currentDir = $currentDir . '/' . $directory)) {
-                continue;
-            }
-
-            if (!\mkdir($currentDir)) {
-                throw new \RuntimeException();
-            }
-        }
+        \mkdir($destinationPath, 0777, true);
     }
 
     public function removeDir(string $directoryPath): void
     {
-        if (\is_dir($directoryPath)) {
-            $files = \scandir($directoryPath);
-            foreach ($files as $file) {
-                if (!$this->isDirectoryRoot($file)) {
-                    $this->removeDir($directoryPath . '/' . $file);
-                }
-            }
-            \rmdir($directoryPath);
-        } else {
-            \unlink($directoryPath);
+        $directory = \scandir($directoryPath);
+        if (!$directory) {
+            return;
         }
-    }
 
-    private function isDirectoryRoot(string $fileName): bool
-    {
-        return \in_array($fileName, ['.', '..']);
+        $files = \array_diff($directory, ['.', '..']);
+
+        foreach ($files as $file) {
+            $current = $directoryPath . '/' . $file;
+            \is_dir($current)
+                ? $this->removeDir($current)
+                : \unlink($current);
+        }
+
+        \rmdir($directoryPath);
     }
 }

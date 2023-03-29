@@ -17,8 +17,8 @@ class GithubArchiveManager
 
     public function unpack(Config $jobConfig): void
     {
-        if ($this->archive->open($this->locator->getTemporaryRepoArchiveFile($jobConfig)) === true) {
-            $this->fileManager->createDirectory($jobExecDir = $this->locator->getExecDirForJob($jobConfig));
+        if ($this->archive->open($this->locator->locateTemporaryRepoArchiveFile($jobConfig)) === true) {
+            $this->fileManager->createDirectory($jobExecDir = $this->locator->renameExecDirFor($jobConfig));
             $this->archive->extractTo($jobExecDir);
             $this->archive->close();
         } else {

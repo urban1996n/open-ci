@@ -5,9 +5,9 @@ namespace App\Job\Event;
 use App\Github\HttpClient;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-#[AsEventListener(event: 'job.event.error', method: 'onJobError')]
-#[AsEventListener(event: 'job.event.created', method: 'onJobCreated')]
-#[AsEventListener(event: 'job.event.status_change', method: 'onJobStatusChange')]
+#[AsEventListener(event: JobEvents::JOB_ERROR, method: 'onJobError')]
+#[AsEventListener(event: JobEvents::JOB_CREATED, method: 'onJobCreated')]
+#[AsEventListener(event: JobEvents::JOB_STATUS_CHANGE, method: 'onJobStatusChange')]
 class JobEventsSubscriber
 {
     public function __construct(private readonly HttpClient $client)

@@ -39,6 +39,6 @@ class Runner
 
     private function runPostExecutionTasks(Job $job): void
     {
-        $this->fileManager->removeDir($this->locator->getUnpackedRepoDirForJob($job->getConfig()));
+        $this->fileManager->removeDir($this->locator->locateUnpackedRepoDirFor($job->getConfig()));
     }
 }
