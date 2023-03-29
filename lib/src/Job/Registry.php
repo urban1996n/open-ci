@@ -13,21 +13,15 @@ use Symfony\Component\Serializer\Serializer;
 
 class Registry
 {
-    private const REDIS_KEY = 'job.registry.jobs_queue';
 
     /** @psalm-var Queue<int, Config>[] */
     private array $jobs = [];
 
     private Semaphore $semaphore;
 
-    private Serializer $serializer;
-
-    public function __construct(
-        private readonly Redis $redis,
-        JobRegistrySemaphore $semaphore
-    ) {
-        $this->serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-        $this->semaphore  = $semaphore->get();
+    public function __construct(private readonly Redis $redis, JobRegistrySemaphore $semaphore)
+    {
+        $this->semaphore = $semaphore->get();
     }
 
     public function tryAdd(Config $jobConfig): void
@@ -120,29 +114,28 @@ class Registry
 
         $jobs = $this->jobs;
 
-        $serialized = $this->serializer->serialize($jobs, 'json');
-        $this->redis->set(self::REDIS_KEY, $serialized);
+        $this->redis->cacheJobsRegistry($jobs);
         $this->load();
     }
 
     private function load(): void
     {
-        if (!$queues = $this->redis->get(self::REDIS_KEY)) {
+        if (!$queues = $this->redis->getCachedJobsRegistry()) {
             return;
         }
 
-        $jobs = \json_decode($queues, true);
-        foreach ($jobs as $branch => $configs) {
+        foreach ($queues as $branch => $configs) {
             $this->jobs[$branch] = new Queue();
             $this->jobs[$branch]->allocate(10);
-        }
 
-        foreach ($jobs as $branch => $configs) {
-            foreach ($configs as $config) {
-                $this->jobs[$branch]->push(
-                    new Config($config['branch'], $config['commitHash'], $config['buildNumber'])
-                );
-            }
+            \array_map(
+                function ($config) use ($branch) {
+                    $this->jobs[$branch]->push(
+                        new Config($config['branch'], $config['commitHash'], $config['buildNumber'])
+                    );
+                },
+                $configs
+            );
         }
     }
 
