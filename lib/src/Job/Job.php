@@ -55,7 +55,7 @@ class Job implements JobConfigAwareInterface
             $this->status = $status;
             $this->dispatcher->dispatch(
                 new StatusChangeEvent($this->getConfig(), $status),
-                JobEvents::JOB_STATUS_CHANGE->value
+                JobEvents::JOB_STATUS_CHANGE
             );
         };
     }

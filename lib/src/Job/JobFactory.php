@@ -40,12 +40,12 @@ class JobFactory
 
             $this->dispatcher->dispatch(
                 new CreatedEvent($config),
-                JobEvents::JOB_CREATED->value
+                JobEvents::JOB_CREATED
             );
         } catch (\Throwable $exception) {
             $this->dispatcher->dispatch(
                 new ErrorEvent($config, new JobCreationException($exception->getMessage(), null)),
-                JobEvents::JOB_ERROR->value
+                JobEvents::JOB_ERROR
             );
         }
 

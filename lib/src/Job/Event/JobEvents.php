@@ -2,9 +2,9 @@
 
 namespace App\Job\Event;
 
-enum JobEvents: string
+interface JobEvents
 {
-    case JOB_ERROR = 'job.event.error';
-    case JOB_CREATED = 'job.event.created';
-    case JOB_STATUS_CHANGE = 'job.event.status_change';
+    public const JOB_ERROR         = 'job.event.error';
+    public const JOB_CREATED       = 'job.event.created';
+    public const JOB_STATUS_CHANGE = 'job.event.status_change';
 }
