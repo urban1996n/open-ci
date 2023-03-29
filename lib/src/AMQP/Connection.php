@@ -2,8 +2,11 @@
 
 namespace App\AMQP;
 
+use App\AMQP\Event\AmqpEvents;
+use App\AMQP\Event\AmqpIOConnectionEvent;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Connection extends AMQPStreamConnection
 {
@@ -28,8 +31,13 @@ class Connection extends AMQPStreamConnection
         }
     }
 
-    public function __construct(string $amqpHost, int $amqpPort, string $amqpUser, string $amqpPassword)
-    {
+    public function __construct(
+        string $amqpHost,
+        int $amqpPort,
+        string $amqpUser,
+        string $amqpPassword,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         parent::__construct(
             $amqpHost,
             $amqpPort,
@@ -49,6 +57,7 @@ class Connection extends AMQPStreamConnection
         $this->currentChannel = $this->currentChannel ?: $this->channel();
         $this->defineQueues();
         $this->defineExchanges();
+        $eventDispatcher->dispatch(new AmqpIOConnectionEvent(), AmqpEvents::AMQP_IO_CONNECTION);
     }
 
     public function getCurrentChannel(): AMQPChannel

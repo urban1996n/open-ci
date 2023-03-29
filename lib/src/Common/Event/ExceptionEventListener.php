@@ -2,10 +2,13 @@
 
 namespace App\Common\Event;
 
+use App\AMQP\Event\AmqpEvents;
+use App\AMQP\Event\AmqpExceptionEvent;
 use App\Job\Event\ErrorEvent;
 use App\Job\Event\JobEvents;
 use App\Job\Exception\JobException;
 use App\Storage\Redis;
+use PhpAmqpLib\Exception\AMQPExceptionInterface;
 use PhpAmqpLib\Exception\AMQPIOException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -28,6 +31,11 @@ class ExceptionEventListener
     {
         $exception = $event->getThrowable();
         $this->logger->error($exception->getMessage());
+
+        if ($exception instanceof AMQPExceptionInterface) {
+            $event = new AmqpExceptionEvent($event->getRequest(), $exception);
+            $this->dispatcher->dispatch($event, AmqpEvents::AMQP_EXCEPTION);
+        }
     }
 
     public function onConsoleError(ConsoleErrorEvent $event): void
