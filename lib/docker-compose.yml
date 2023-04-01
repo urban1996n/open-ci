@@ -26,9 +26,9 @@ services:
       context: ./Docker/apache2
       args:
         CALLBACK_ENDPOINT: "$CALLBACK_ENDPOINT"
+        MAIN_SERVERNAME: "$MAIN_SERVERNAME"
     ports:
-      - 80:80
-      - 8443:8443
+      - 443:443
     depends_on:
       - php8.1
     networks:
