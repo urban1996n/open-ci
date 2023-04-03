@@ -21,9 +21,16 @@ RUN sed -i \
     -e 's/^#\(LoadModule .*mod_rewrite.so\)/\1/' \
     /usr/local/apache2/conf/httpd.conf
 
-# SSL key and certificate files.
+# Create ssl key and certificate files, or copy them if they exist in ssl directory.
 RUN apk add openssl
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /usr/local/apache2/conf/server.key -out /usr/local/apache2/conf/server.crt -subj "/CN=$MAIN_SERVERNAME"
+
+RUN if [ ! -e apache2/ssl/*.crt ]; then\
+      openssl req -x509 -nodes \
+      -days 365 -newkey rsa:2048 \
+      -keyout /usr/local/apache2/conf/server.key \
+      -out /usr/local/apache2/conf/server.crt \
+      -subj "/CN=$MAIN_SERVERNAME";\
+fi
 
 # Include ssl config in main apache2 configuration
 RUN sed -i \
@@ -32,7 +39,7 @@ RUN sed -i \
     -e 's/^#\(LoadModule .*mod_socache_shmcb.so\)/\1/' \
     conf/httpd.conf
 
-# Comment out all ServerName, or ServerAlias in all files beside the custom configuration file.
+# Change all uncomented servername or alias with env defined servername
 RUN grep -rlE '^([^#])?(\s{0,})(ServerName|ServerAlias)' /usr/local/apache2/conf \
     | xargs sed -i -E "s/(ServerName|ServerAlias) (.*)/\1 $MAIN_SERVERNAME/g"
 
