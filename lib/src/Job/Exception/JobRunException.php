@@ -2,7 +2,6 @@
 
 namespace App\Job\Exception;
 
-class JobRunException extends JobException
+class JobRunException extends JobConfigException
 {
-
 }
