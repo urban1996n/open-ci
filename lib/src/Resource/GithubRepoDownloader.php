@@ -21,7 +21,7 @@ class GithubRepoDownloader
     {
         $fileResponse = $this->client->downloadZipArchive($jobConfig);
 
-        $this->fileManager->createDirectory($this->locator->locateTempDirFor($jobConfig));
+        $this->fileManager->createTempDirectory($jobConfig);
         if ($fileResponse->getStatusCode() !== 200
             || !$tmpFile = \fopen($this->locator->locateTemporaryRepoArchiveFile($jobConfig), 'w+')
         ) {
@@ -40,7 +40,7 @@ class GithubRepoDownloader
             throw new \RuntimeException();
         }
 
-        $this->fileManager->removeDir($this->locator->locateTempDirFor($jobConfig));
+        $this->fileManager->removeTempDirectory($jobConfig);
         unset($this->tmpFiles[$jobConfig->getIdentifier()]);
     }
 }

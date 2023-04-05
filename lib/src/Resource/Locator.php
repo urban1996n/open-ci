@@ -33,14 +33,14 @@ class Locator
         return $this->locateTempDirFor($jobConfig) . '/' . $jobConfig->getIdentifier() . '.zip';
     }
 
-    public function renameExecDirFor(Config $jobConfig): string
+    public function locateExecDirFor(Config $jobConfig): string
     {
         return $this->locateExecDir() . '/' . $this->buildDestinationPath($jobConfig);
     }
 
     public function locateUnpackedRepoDirFor(Config $jobConfig): string
     {
-        return $this->renameExecDirFor($jobConfig) . '/' . $this->githubOwner . '-' . $this->githubRepository . '-'
+        return $this->locateExecDirFor($jobConfig) . '/' . $this->githubOwner . '-' . $this->githubRepository . '-'
             . $jobConfig->getCommitHash();
     }
 
@@ -52,6 +52,16 @@ class Locator
     public function locateLogFilePathFor(Config $jobConfig): string
     {
         return $this->locateTempDir() . '/logs/' . $this->buildDestinationPath($jobConfig);
+    }
+
+    public function locateConfigDir(): string
+    {
+        return $this->rootDir . '/config';
+    }
+
+    public function locateConfigFile(string $fileName): string
+    {
+        return $this->locateConfigDir() . '/' . $fileName;
     }
 
     private function buildDestinationPath(Config $jobConfig): string

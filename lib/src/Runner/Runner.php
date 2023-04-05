@@ -6,6 +6,7 @@ use App\Job\Job;
 use App\Resource\FileManager;
 use App\Resource\GithubArchiveManager;
 use App\Resource\GithubRepoDownloader;
+use App\Resource\JobFileManager;
 use App\Resource\Locator;
 
 class Runner
@@ -13,8 +14,7 @@ class Runner
     public function __construct(
         private readonly GithubRepoDownloader $downloader,
         private readonly GithubArchiveManager $archiveManager,
-        private readonly FileManager $fileManager,
-        private readonly Locator $locator,
+        private readonly JobFileManager $fileManager,
     ) {
     }
 
@@ -39,6 +39,6 @@ class Runner
 
     private function runPostExecutionTasks(Job $job): void
     {
-        $this->fileManager->removeDir($this->locator->locateUnpackedRepoDirFor($job->getConfig()));
+        $this->fileManager->removeUnpackedRepoDirectory($job->getConfig());
     }
 }
