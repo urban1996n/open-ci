@@ -18,7 +18,6 @@ services:
 
   pipeline_schema_validator:
     class: App\Pipeline\SchemaValidator
-    arguments: [ '%env(SCHEMA_URL)%' ]
 
   App\Pipeline\PipelineFactory:
     arguments: [ '@pipeline_schema_validator', '@pipeline_assembler', '%env(PIPELINE_PATH)%' ]
