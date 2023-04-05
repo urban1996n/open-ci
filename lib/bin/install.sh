@@ -20,7 +20,7 @@ then
   exit 1;
 fi
 
-docker compose --env-file "${local_env_file}" up -d --build
+docker compose --env-file "${docker_env_file}" up -d --build
 
 if [ $? != 0 ]
 then

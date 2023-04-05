@@ -20,7 +20,7 @@ services:
     class: App\Pipeline\SchemaValidator
 
   App\Pipeline\PipelineFactory:
-    arguments: [ '@pipeline_schema_validator', '@pipeline_assembler', '%env(PIPELINE_PATH)%' ]
+    arguments: [ '@pipeline_schema_validator', '@pipeline_assembler' ]
 
   script_runner:
     class: App\Job\ScriptRunner
