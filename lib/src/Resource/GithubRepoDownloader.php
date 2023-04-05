@@ -13,7 +13,7 @@ class GithubRepoDownloader
     public function __construct(
         private readonly HttpClient $client,
         private readonly Locator $locator,
-        private readonly FileManager $fileManager
+        private readonly JobFileManager $fileManager
     ) {
     }
 
