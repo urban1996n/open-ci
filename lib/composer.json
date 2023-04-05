@@ -1,5 +1,6 @@
 {
-    "name": "wkluz/ci-cd-system",
+    "name": "urban1996n/openci",
+    "version": "0.0.1",
     "description": "Simple CLI Ci/Cd system for educational purposes",
     "type": "project",
     "minimum-stability": "stable",
