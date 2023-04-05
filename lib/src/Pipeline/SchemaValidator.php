@@ -4,6 +4,7 @@ namespace App\Pipeline;
 
 use App\Pipeline\Exception\InvalidSchemaException;
 use App\Pipeline\Exception\MissingSchemaFileException;
+use App\Resource\Locator;
 use Opis\JsonSchema\Errors\ValidationError;
 use Opis\JsonSchema\Validator;
 
@@ -11,12 +12,9 @@ class SchemaValidator
 {
     private Validator $validator;
 
-    private string $pipelineSchemaUrl;
-
-    public function __construct(string $pipelineSchemaUrl)
+    public function __construct(private readonly Locator $locator)
     {
-        $this->validator         = new Validator();
-        $this->pipelineSchemaUrl = $pipelineSchemaUrl;
+        $this->validator = new Validator();
     }
 
     public function validate(string $pipelinePath): bool
@@ -25,9 +23,13 @@ class SchemaValidator
             throw new MissingSchemaFileException($pipelinePath);
         }
 
+        if (!\file_exists($schemaFile = $this->locator->locateConfigFile('schema/json-schema.json'))) {
+            throw new MissingSchemaFileException($schemaFile);
+        }
+
         $validationResult = $this->validator->validate(
             \json_decode(\file_get_contents($pipelinePath)),
-            \file_get_contents($this->pipelineSchemaUrl)
+            \file_get_contents($schemaFile)
         );
 
         if ($validationResult->isValid()) {
