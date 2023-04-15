@@ -10,7 +10,7 @@ class GithubArchiveManager
 
     public function __construct(
         private readonly Locator $locator,
-        private readonly FileManager $fileManager
+        private readonly JobFileManager $fileManager
     ) {
         $this->archive = new \ZipArchive();
     }
@@ -18,8 +18,8 @@ class GithubArchiveManager
     public function unpack(Config $jobConfig): void
     {
         if ($this->archive->open($this->locator->locateTemporaryRepoArchiveFile($jobConfig)) === true) {
-            $this->fileManager->createDirectory($jobExecDir = $this->locator->renameExecDirFor($jobConfig));
-            $this->archive->extractTo($jobExecDir);
+            $this->fileManager->createExecDirectory($jobConfig);
+            $this->archive->extractTo($this->locator->locateExecDirFor($jobConfig));
             $this->archive->close();
         } else {
             throw new \RuntimeException();

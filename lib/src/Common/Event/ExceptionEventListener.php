@@ -6,7 +6,8 @@ use App\AMQP\Event\AmqpEvents;
 use App\AMQP\Event\AmqpExceptionEvent;
 use App\Job\Event\ErrorEvent;
 use App\Job\Event\JobEvents;
-use App\Job\Exception\JobException;
+use App\Job\Exception\JobConfigException;
+use App\Job\Registry;
 use App\Storage\Redis;
 use PhpAmqpLib\Exception\AMQPExceptionInterface;
 use PhpAmqpLib\Exception\AMQPIOException;
@@ -24,7 +25,8 @@ class ExceptionEventListener
 {
     public function __construct(
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly Registry $jobRegistry
     ) {
     }
 
@@ -44,14 +46,15 @@ class ExceptionEventListener
         $exception = $event->getError();
         $this->logger->error($exception->getMessage());
 
-        if ($exception instanceof JobException && $exception->getJob()) {
+        $config = $exception instanceof JobConfigException && $exception->getConfig() ?
+            $exception->getConfig()
+            : $this->jobRegistry->getCurrentJob();
+
+        if ($config) {
             $this->dispatcher->dispatch(
-                new ErrorEvent($exception->getJob()->getConfig(), $exception),
+                new ErrorEvent($config, $exception),
                 JobEvents::JOB_ERROR
             );
         }
-
-        $event->getOutput()->writeln($exception->getMessage());
-        $event->getCommand()->getApplication()->run();
     }
 }

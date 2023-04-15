@@ -45,7 +45,7 @@ class Job implements JobConfigAwareInterface
         } catch (\Throwable $exception) {
             $this->status = Status::Failure;
             // Otherwise create translatable exception. - Only pipeline and job exceptions will work as a reason for status change.
-            throw new JobRunException($exception->getMessage(), $this);
+            throw new JobRunException($exception->getMessage(), $this->getConfig());
         }
     }
 

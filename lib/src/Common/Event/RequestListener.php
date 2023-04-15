@@ -17,7 +17,7 @@ class RequestListener
     {
         $request = $event->getRequest();
 
-        if (!$content = $request->getContent()) {
+        if ((!$content = $request->getContent()) || $request->headers->get('content-type') !== 'application/json') {
             return;
         }
 

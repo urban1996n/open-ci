@@ -13,9 +13,10 @@ use Symfony\Component\Serializer\Serializer;
 
 class Registry
 {
-
     /** @psalm-var Queue<int, Config>[] */
     private array $jobs = [];
+
+    private ?Config $currentJob = null;
 
     private Semaphore $semaphore;
 
@@ -84,6 +85,10 @@ class Registry
             $next = $queue->peek();
             if ($queue->isEmpty()) {
                 unset($this->jobs[$jobConfig->getBranch()]);
+            }
+
+            if (!$this->currentJob) {
+                $this->currentJob = $next;
             }
 
             return $next;
@@ -155,6 +160,8 @@ class Registry
             if ($queue && !$queue->isEmpty()) {
                 $queue->pop();
             }
+
+            $this->currentJob = null;
         };
 
         $this->do($do);
@@ -163,5 +170,10 @@ class Registry
     public function isLocked(): bool
     {
         return !$this->semaphore->acquire();
+    }
+
+    public function getCurrentJob(): ?Config
+    {
+        return $this->currentJob;
     }
 }

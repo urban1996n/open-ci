@@ -14,12 +14,29 @@ class WebhookController extends AbstractController
     #[Route('/webhook', methods: ['POST'])]
     public function githubWebhook(Request $request, JobMessenger $jobMessenger): Response
     {
-        $input = $request->request;
+        //Todo rewrite to validator service
+        $errors = [];
+        $input  = $request->request;
 
         $commit = $input->get('after');
-        $branch = \explode('/', $input->get('ref'));
 
-        $message = new JobMessage(\end($branch), $commit);
+        $branch = $input->get('ref');
+        $branch = \str_contains($branch, '/') ? \explode('/', $branch) : [$branch];
+        $branch = \end($branch);
+
+        if (!$branch) {
+            $errors[] = 'Missing `ref` parameter in request';
+        }
+
+        if (!$commit) {
+            $errors[] = ('Missing `after` parameter in request');
+        }
+
+        if ($errors) {
+            return new Response(\implode(', ', $errors), Response::HTTP_BAD_REQUEST);
+        }
+
+        $message = new JobMessage($branch, $commit);
         $jobMessenger->send($message);
 
         return new Response();

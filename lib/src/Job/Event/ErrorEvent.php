@@ -3,11 +3,11 @@
 namespace App\Job\Event;
 
 use App\Job\Data\Config;
-use App\Job\Exception\JobException;
+use App\Job\Exception\JobConfigException;
 
 class ErrorEvent extends JobEvent
 {
-    public function __construct(Config $jobConfig, private readonly JobException $exception)
+    public function __construct(Config $jobConfig, private readonly JobConfigException $exception)
     {
         parent::__construct($jobConfig);
     }
