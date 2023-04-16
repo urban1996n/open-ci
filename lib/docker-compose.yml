@@ -46,9 +46,11 @@ services:
     restart: always
 
   redis:
-    image: redis/redis-stack-server:6.2.0
-    environment:
-      REDIS_PASSWORD: "$REDIS_PASSWORD"
+    container_name: redis_server
+    build:
+      context: ./Docker/redis
+      args:
+        REDIS_PASSWORD: "$REDIS_PASSWORD"
     ports:
       - 6379:6379
     networks:
