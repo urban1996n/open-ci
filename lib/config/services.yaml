@@ -12,6 +12,7 @@ services:
 
   App\:
     resource: '../src/*'
+    exclude: '../src/Data/Entity'
 
   pipeline_assembler:
     class: App\Pipeline\Assembler
