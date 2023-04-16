@@ -27,6 +27,6 @@ class JobFileManager extends FileManager
 
     public function removeUnpackedRepoDirectory(Config $config): void
     {
-        $this->removeDir($this->locator->locateUnpackedRepoDirFor($config));
+        $this->removeDir($this->locator->locateExecDirFor($config));
     }
 }
