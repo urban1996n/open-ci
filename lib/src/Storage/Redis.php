@@ -15,12 +15,13 @@ class Redis extends BaseRedis
 
     private SerializerInterface $serializer;
 
-    public function __construct(private readonly string $redisUrl, string $redisPassword)
+    public function __construct(string $redisUrl, string $redisPassword)
     {
         parent::__construct();
 
         $this->serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-        $this->connect($this->redisUrl);
+        $this->connect($redisUrl);
+        $this->auth($redisPassword);
     }
 
     public function cacheJobsRegistry(array $jobs): void

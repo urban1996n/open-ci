@@ -11,18 +11,14 @@ class FileManager
 
     public function removeDir(string $directoryPath): void
     {
-        $directory = \scandir($directoryPath);
-        if (!$directory) {
-            return;
-        }
-
-        $files = \array_diff($directory, ['.', '..']);
-
-        foreach ($files as $file) {
-            $current = $directoryPath . '/' . $file;
-            \is_dir($current)
-                ? $this->removeDir($current)
-                : \unlink($current);
+        foreach (\scandir($directoryPath) as $file) {
+            if (!\in_array($file, ['..', '.'])) {
+                if (\is_dir($directoryPath . '/' . $file) && !is_link($directoryPath . "/" . $file)) {
+                    $this->removeDir($directoryPath . '/' . $file);
+                } else {
+                    \unlink($directoryPath . '/' . $file);
+                }
+            }
         }
 
         \rmdir($directoryPath);

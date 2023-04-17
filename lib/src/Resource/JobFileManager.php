@@ -10,14 +10,14 @@ class JobFileManager extends FileManager
     {
     }
 
-    public function createTempDirectory(Config $config): void
+    public function createTempArchiveDirectory(Config $config): void
     {
-        $this->createDirectory($this->locator->locateTempDirFor($config));
+        $this->createDirectory($this->locator->locateArchiveDirFor($config));
     }
 
-    public function removeTempDirectory(Config $config): void
+    public function removeTempArchiveDirectory(Config $config): void
     {
-        $this->removeDir($this->locator->locateTempDirFor($config));
+        $this->removeDir($this->locator->locateArchiveDirFor($config));
     }
 
     public function createExecDirectory(Config $config): void
@@ -27,6 +27,6 @@ class JobFileManager extends FileManager
 
     public function removeUnpackedRepoDirectory(Config $config): void
     {
-        $this->removeDir($this->locator->locateUnpackedRepoDirFor($config));
+        $this->removeDir($this->locator->locateExecDirFor($config));
     }
 }

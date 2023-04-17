@@ -7,9 +7,6 @@ use App\Job\Data\Config;
 
 class GithubRepoDownloader
 {
-    /** @var resource[] */
-    private array $tmpFiles = [];
-
     public function __construct(
         private readonly HttpClient $client,
         private readonly Locator $locator,
@@ -21,26 +18,14 @@ class GithubRepoDownloader
     {
         $fileResponse = $this->client->downloadZipArchive($jobConfig);
 
-        $this->fileManager->createTempDirectory($jobConfig);
+        $this->fileManager->createTempArchiveDirectory($jobConfig);
         if ($fileResponse->getStatusCode() !== 200
             || !$tmpFile = \fopen($this->locator->locateTemporaryRepoArchiveFile($jobConfig), 'w+')
         ) {
             throw new \RuntimeException();
         }
 
-        $repoContent                                 = $fileResponse->getBody()->getContents();
-        $this->tmpFiles[$jobConfig->getIdentifier()] = $tmpFile;
+        $repoContent = $fileResponse->getBody()->getContents();
         \fwrite($tmpFile, $repoContent);
-    }
-
-    public function remove(Config $jobConfig): void
-    {
-        $tmpFile = $this->tmpFiles[$jobConfig->getIdentifier()] ?? null;
-        if (!$tmpFile) {
-            throw new \RuntimeException();
-        }
-
-        $this->fileManager->removeTempDirectory($jobConfig);
-        unset($this->tmpFiles[$jobConfig->getIdentifier()]);
     }
 }

@@ -8,6 +8,7 @@ use App\Resource\GithubArchiveManager;
 use App\Resource\GithubRepoDownloader;
 use App\Resource\JobFileManager;
 use App\Resource\Locator;
+use Psr\Log\LoggerInterface;
 
 class Runner
 {
@@ -15,6 +16,7 @@ class Runner
         private readonly GithubRepoDownloader $downloader,
         private readonly GithubArchiveManager $archiveManager,
         private readonly JobFileManager $fileManager,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -27,9 +29,14 @@ class Runner
 
     private function runPreExecutionTasks(Job $job): void
     {
-        $this->downloader->download($job->getConfig());
-        $this->archiveManager->unpack($job->getConfig());
-        $this->downloader->remove($job->getConfig());
+        try {
+            $this->downloader->download($job->getConfig());
+            $this->archiveManager->unpack($job->getConfig());
+        } catch (\Throwable $exception) {
+            $this->logger->error($exception->getMessage(), $exception->getTrace());
+        } finally {
+            $this->fileManager->removeTempArchiveDirectory($job->getConfig());
+        }
     }
 
     private function runJobExecutionTasks(Job $job): void
