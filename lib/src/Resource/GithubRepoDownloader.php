@@ -18,7 +18,7 @@ class GithubRepoDownloader
     {
         $fileResponse = $this->client->downloadZipArchive($jobConfig);
 
-        $this->fileManager->createTempDirectory($jobConfig);
+        $this->fileManager->createTempArchiveDirectory($jobConfig);
         if ($fileResponse->getStatusCode() !== 200
             || !$tmpFile = \fopen($this->locator->locateTemporaryRepoArchiveFile($jobConfig), 'w+')
         ) {

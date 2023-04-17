@@ -23,14 +23,14 @@ class Locator
         return $this->locateTempDir() . '/exec';
     }
 
-    public function locateTempDirFor(Config $jobConfig): string
+    public function locateArchiveDirFor(Config $jobConfig): string
     {
-        return $this->locateTempDir() . '/' . $this->buildDestinationPath($jobConfig);
+        return $this->locateTempDir() . '/tmp_archive/' . $this->buildDestinationPath($jobConfig);
     }
 
     public function locateTemporaryRepoArchiveFile(Config $jobConfig): string
     {
-        return $this->locateTempDirFor($jobConfig) . '/' . $jobConfig->getIdentifier() . '.zip';
+        return $this->locateArchiveDirFor($jobConfig) . '/' . $jobConfig->getIdentifier() . '.zip';
     }
 
     public function locateExecDirFor(Config $jobConfig): string

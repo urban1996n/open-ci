@@ -35,7 +35,7 @@ class Runner
         } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage(), $exception->getTrace());
         } finally {
-            $this->fileManager->removeTempDirectory($job->getConfig());
+            $this->fileManager->removeTempArchiveDirectory($job->getConfig());
         }
     }
 
