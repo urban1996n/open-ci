@@ -26,6 +26,7 @@
         "opis/json-schema": "^2.2",
         "php-amqplib/php-amqplib": ">=3.0",
         "php-ds/php-ds": "^1.4",
+        "sentry/sentry-symfony": "^4.7",
         "symfony/config": "6.2.*",
         "symfony/console": "6.2.*",
         "symfony/dependency-injection": "6.2.*",
@@ -44,7 +45,8 @@
     "config": {
         "allow-plugins": {
             "symfony/runtime": true,
-            "symfony/flex": false
+            "symfony/flex": false,
+            "php-http/discovery": true
         },
         "sort-packages": true
     },
