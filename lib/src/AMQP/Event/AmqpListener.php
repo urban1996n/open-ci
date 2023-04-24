@@ -6,18 +6,23 @@ use App\AMQP\JobMessage;
 use App\Http\JobMessenger;
 use App\Job\Data\Config;
 use App\Storage\Redis;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(event: AmqpEvents::AMQP_EXCEPTION, method: 'onAmqpException')]
 #[AsEventListener(event: AmqpEvents::AMQP_IO_CONNECTION, method: 'onAmqpConnection')]
 class AmqpListener
 {
-    public function __construct(private readonly Redis $redis, private readonly JobMessenger $jobMessenger)
-    {
+    public function __construct(
+        private readonly Redis $redis,
+        private readonly JobMessenger $jobMessenger,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     public function onAmqpException(AmqpExceptionEvent $event): void
     {
+        $this->logger->error($event->getException()?->getMessage());
         $request = $event->getRequest();
         $commit  = $request->request->get('after');
         $branch  = \explode('/', $request->request->get('ref'));
