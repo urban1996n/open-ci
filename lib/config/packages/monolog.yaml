@@ -8,3 +8,7 @@ monolog:
     syslog_handler:
       type: syslog
       level: error
+
+    sentry:
+      type: service
+      id: Sentry\Monolog\Handler

@@ -58,3 +58,8 @@ services:
   App\Github\HttpClient:
     arguments:
       $githubApiToken: '%github_api_token%'
+
+  Sentry\Monolog\Handler:
+    arguments:
+      $hub: '@Sentry\State\HubInterface'
+      $level: !php/const Monolog\Logger::ERROR
