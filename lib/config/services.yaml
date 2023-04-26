@@ -63,3 +63,7 @@ services:
     arguments:
       $hub: '@Sentry\State\HubInterface'
       $level: !php/const Monolog\Logger::ERROR
+
+  sentry.options.on_before_send:
+    class: 'App\Sentry\Options'
+    factory: [ '@App\Sentry\Options', 'onBeforeSend' ]
