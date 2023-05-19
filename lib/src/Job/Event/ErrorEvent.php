@@ -2,7 +2,7 @@
 
 namespace App\Job\Event;
 
-use App\Job\Data\Config;
+use App\Job\Config;
 use App\Job\Exception\JobConfigException;
 
 class ErrorEvent extends JobEvent

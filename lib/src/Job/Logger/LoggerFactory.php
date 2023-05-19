@@ -2,7 +2,7 @@
 
 namespace App\Job\Logger;
 
-use App\Job\Data\Config;
+use App\Job\Config;
 use App\Resource\Locator;
 
 class LoggerFactory

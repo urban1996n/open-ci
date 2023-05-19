@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Storage;
+namespace App\Store;
 
 use Redis as BaseRedis;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;

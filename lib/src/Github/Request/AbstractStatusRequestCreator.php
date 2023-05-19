@@ -2,7 +2,7 @@
 
 namespace App\Github\Request;
 
-use App\Job\Data\Config;
+use App\Job\Config;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Service\Attribute\Required;

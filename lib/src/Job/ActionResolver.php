@@ -2,7 +2,7 @@
 
 namespace App\Job;
 
-use App\Job\Data\Config;
+use App\Job\Registry\Registry;
 use App\Runner\Runner;
 
 class ActionResolver

@@ -3,7 +3,7 @@
 namespace App\Github\Request;
 
 use App\Common\Status;
-use App\Job\Data\Config;
+use App\Job\Config;
 
 class UpdateStatusCheckRequestCreator extends AbstractStatusRequestCreator
 {

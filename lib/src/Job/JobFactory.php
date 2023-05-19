@@ -2,7 +2,6 @@
 
 namespace App\Job;
 
-use App\Job\Data\Config;
 use App\Job\Event\CreatedEvent;
 use App\Job\Event\ErrorEvent;
 use App\Job\Event\JobEvents;

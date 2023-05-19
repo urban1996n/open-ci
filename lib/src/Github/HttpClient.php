@@ -5,7 +5,7 @@ namespace App\Github;
 use App\Common\Status;
 use App\Github\Request\RequestFactory;
 use App\Github\Request\RequestType;
-use App\Job\Data\Config;
+use App\Job\Config;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 

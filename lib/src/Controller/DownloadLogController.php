@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Job\Data\Config;
+use App\Job\Config;
 use App\Resource\Locator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;

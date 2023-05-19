@@ -4,8 +4,7 @@ namespace App\AMQP\Event;
 
 use App\AMQP\JobMessage;
 use App\Http\JobMessenger;
-use App\Job\Data\Config;
-use App\Storage\Redis;
+use App\Store\Redis;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
