@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Common\Decorator;
+namespace App\Job\Registry;
 
-use App\Storage\Redis;
-use Symfony\Component\Semaphore\Semaphore;
+use App\Store\Redis;
 use Symfony\Component\Semaphore\SemaphoreFactory;
+use Symfony\Component\Semaphore\SemaphoreInterface;
 use Symfony\Component\Semaphore\Store\RedisStore;
 
-class JobRegistrySemaphore
+class Semaphore
 {
     private const SEMAPHORE_KEY = 'job_registry_semaphore';
 
@@ -15,7 +15,7 @@ class JobRegistrySemaphore
     {
     }
 
-    public function get(): Semaphore
+    public function get(): SemaphoreInterface
     {
         return (new SemaphoreFactory($this->getRedisStore()))->createSemaphore(self::SEMAPHORE_KEY, 1);
     }

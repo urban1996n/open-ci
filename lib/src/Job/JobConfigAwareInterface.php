@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Job\Data;
+namespace App\Job;
 
 interface JobConfigAwareInterface
 {

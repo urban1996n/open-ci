@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Job;
+namespace App\Job\Registry;
 
-use App\Common\Decorator\JobRegistrySemaphore;
-use App\Job\Data\Config;
-use App\Storage\Redis;
+use App\Job\Config;
+use App\Store\Redis;
 use Ds\Queue;
-use Symfony\Component\Semaphore\Semaphore;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Semaphore\SemaphoreInterface;
 
 class Registry
 {
@@ -18,9 +14,9 @@ class Registry
 
     private ?Config $currentJob = null;
 
-    private Semaphore $semaphore;
+    private SemaphoreInterface $semaphore;
 
-    public function __construct(private readonly Redis $redis, JobRegistrySemaphore $semaphore)
+    public function __construct(private readonly Redis $redis, Semaphore $semaphore)
     {
         $this->semaphore = $semaphore->get();
     }

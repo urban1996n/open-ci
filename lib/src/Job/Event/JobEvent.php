@@ -2,8 +2,8 @@
 
 namespace App\Job\Event;
 
-use App\Job\Data\Config;
-use App\Job\Data\JobConfigAwareInterface;
+use App\Job\Config;
+use App\Job\JobConfigAwareInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class JobEvent extends Event implements JobConfigAwareInterface

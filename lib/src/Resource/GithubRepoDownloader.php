@@ -3,7 +3,7 @@
 namespace App\Resource;
 
 use App\Github\HttpClient;
-use App\Job\Data\Config;
+use App\Job\Config;
 
 class GithubRepoDownloader
 {

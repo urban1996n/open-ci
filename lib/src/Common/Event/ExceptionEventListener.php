@@ -7,7 +7,7 @@ use App\AMQP\Event\AmqpExceptionEvent;
 use App\Job\Event\ErrorEvent;
 use App\Job\Event\JobEvents;
 use App\Job\Exception\JobConfigException;
-use App\Job\Registry;
+use App\Job\Registry\Registry;
 use PhpAmqpLib\Exception\AMQPExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;

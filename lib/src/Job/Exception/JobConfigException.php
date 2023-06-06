@@ -3,7 +3,7 @@
 namespace App\Job\Exception;
 
 use App\Common\Exception\JobConfigAwareException;
-use App\Job\Data\Config;
+use App\Job\Config;
 
 abstract class JobConfigException extends \RuntimeException implements JobConfigAwareException
 {

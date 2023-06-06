@@ -3,7 +3,7 @@
 namespace App\Job\Event;
 
 use App\Common\Status;
-use App\Job\Data\Config;
+use App\Job\Config;
 
 class StatusChangeEvent extends JobEvent
 {

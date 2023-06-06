@@ -25,11 +25,7 @@ RUN sed -i \
 RUN apk add openssl
 
 RUN if [ ! -e apache2/ssl/*.crt ]; then\
-      openssl req -x509 -nodes \
-      -days 365 -newkey rsa:2048 \
-      -keyout /usr/local/apache2/conf/server.key \
-      -out /usr/local/apache2/conf/server.crt \
-      -subj "/CN=$MAIN_SERVERNAME";\
+      openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /usr/local/apache2/conf/server.key -out /usr/local/apache2/conf/server.crt -subj "/CN=127.0.0.1"
 fi
 
 # Include ssl config in main apache2 configuration

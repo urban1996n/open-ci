@@ -3,8 +3,6 @@
 namespace App\Job;
 
 use App\Common\Status;
-use App\Job\Data\Config;
-use App\Job\Data\JobConfigAwareInterface;
 use App\Job\Event\JobEvents;
 use App\Job\Event\StatusChangeEvent;
 use App\Job\Exception\JobRunException;

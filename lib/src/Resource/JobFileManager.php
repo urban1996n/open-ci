@@ -2,7 +2,7 @@
 
 namespace App\Resource;
 
-use App\Job\Data\Config;
+use App\Job\Config;
 use Symfony\Component\Filesystem\Filesystem;
 
 class JobFileManager

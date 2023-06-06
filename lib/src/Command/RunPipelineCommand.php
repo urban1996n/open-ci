@@ -3,16 +3,16 @@
 namespace App\Command;
 
 use App\Job\ActionResolver;
-use App\Job\Data\Config;
+use App\Job\Config;
 use App\Runner\Consumer;
 use PhpAmqpLib\Message\AMQPMessage;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Contracts\Service\Attribute\Required;
 
-#[AsCommand('pipeline:run-single')]
+#[AsCommand('pipeline:execute')]
 class RunPipelineCommand extends Command
 {
     private Consumer $consumer;

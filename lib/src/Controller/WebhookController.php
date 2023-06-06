@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\AMQP\JobMessage;
 use App\Http\JobMessenger;
+use App\Request\JsonToInputBagDecorator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +12,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends AbstractController
 {
+    public function __construct(private readonly JsonToInputBagDecorator $decorator)
+    {
+    }
+
     #[Route('/webhook', methods: ['POST'])]
     public function githubWebhook(Request $request, JobMessenger $jobMessenger): Response
     {
@@ -18,8 +23,11 @@ class WebhookController extends AbstractController
         $errors = [];
         $input  = $request->request;
 
-        $commit = $input->get('after');
+        if ($request->request->has('payload')) {
+            $input = $this->decorator->decorate($request->get('payload'));
+        }
 
+        $commit = $input->get('after');
         $branch = $input->get('ref');
         $branch = \str_contains($branch, '/') ? \explode('/', $branch) : [$branch];
         $branch = \end($branch);

@@ -2,7 +2,7 @@
 
 namespace App\Github\Request;
 
-use App\Job\Data\Config;
+use App\Job\Config;
 
 class DownloadZipBallRequestCreator extends AbstractGithubRequestCreator
 {

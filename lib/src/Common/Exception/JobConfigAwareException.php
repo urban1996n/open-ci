@@ -2,8 +2,8 @@
 
 namespace App\Common\Exception;
 
-use App\Job\Data\Config;
-use App\Job\Data\JobConfigAwareInterface;
+use App\Job\Config;
+use App\Job\JobConfigAwareInterface;
 
 interface JobConfigAwareException extends JobConfigAwareInterface, \Throwable
 {
