@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Resource;
+namespace App\Resource\Github;
 
 use App\Github\HttpClient;
 use App\Job\Config;
+use App\Resource\JobFileManager;
+use App\Resource\Locator;
 
-class GithubRepoDownloader
+class
+GithubRepoDownloader
 {
     public function __construct(
         private readonly HttpClient $client,

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Resource;
+namespace App\Resource\Github;
 
-use App\Job\Config;
+use App\Job\Data\Config;
+use App\Resource\JobFileManager;
+use App\Resource\Locator;
 
 class GithubArchiveManager
 {
