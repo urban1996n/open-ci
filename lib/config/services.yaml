@@ -11,8 +11,14 @@ services:
       $githubRepository: '%github_repository%'
 
   App\:
-    resource: '../src/*'
-    exclude: '../src/Data/Entity'
+    resource: '../src'
+    exclude:
+      - '../src/**/**Event.php'
+      - '../src/**/**Exception.php'
+      - '../src/Job/Config.php'
+      - '../src/Job/Job.php'
+      - '../src/AMQP/**Message.php'
+      - '../src/Pipeline/Data'
 
   pipeline_assembler:
     class: App\Pipeline\Assembler
@@ -40,7 +46,7 @@ services:
   App\AMQP\AbstractMessenger:
     lazy: true
 
-  App\Storage\Redis:
+  App\Store\Redis:
     arguments:
       $redisUrl: '%env(REDIS_URL)%'
       $redisPassword: '%env(REDIS_PASSWORD)%'
