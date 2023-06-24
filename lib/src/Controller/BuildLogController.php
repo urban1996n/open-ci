@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Job\Config;
 use App\Filesystem\Filesystem;
+use App\Job\Config;
 use App\Resource\Locator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
