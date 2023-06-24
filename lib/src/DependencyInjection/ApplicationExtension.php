@@ -23,7 +23,7 @@ class ApplicationExtension implements ExtensionInterface
         return 'ci_cd';
     }
 
-    public function getXsdValidationBasePath(): string | false
+    public function getXsdValidationBasePath(): string|false
     {
         return false;
     }
@@ -35,7 +35,6 @@ class ApplicationExtension implements ExtensionInterface
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $this->loadConfiguration($container);
         $this->registerServices($container);
     }
 
@@ -43,11 +42,5 @@ class ApplicationExtension implements ExtensionInterface
     {
         $container->registerForAutoconfiguration(RequestCreatorInterface::class)
             ->addTag(GithubCompilerPass::SERVICE_TAG_REQUEST_CREATOR);
-    }
-
-    private function loadConfiguration(ContainerBuilder $container)
-    {
-        $loader = new YamlFileLoader($container, $this->fileLocator);
-        $loader->load('services.yaml');
     }
 }
