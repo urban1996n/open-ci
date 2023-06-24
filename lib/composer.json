@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-ctype": "*",
         "ext-ds": "*",
         "ext-iconv": "*",
@@ -21,12 +21,15 @@
         "ext-sockets": "*",
         "ext-sysvsem": "*",
         "ext-zip": "*",
+        "defuse/php-encryption": "^2.3",
         "guzzlehttp/guzzle": "^7.0",
         "monolog/monolog": "^3.2",
         "opis/json-schema": "^2.2",
         "php-amqplib/php-amqplib": ">=3.0",
         "php-ds/php-ds": "^1.4",
+        "sensio/framework-extra-bundle":"6.2.*",
         "sentry/sentry-symfony": "^4.7",
+        "symfony/asset": "^6.3",
         "symfony/config": "6.2.*",
         "symfony/console": "6.2.*",
         "symfony/dependency-injection": "6.2.*",
@@ -34,12 +37,12 @@
         "symfony/event-dispatcher": "^6.2",
         "symfony/framework-bundle": "^6.2",
         "symfony/monolog-bundle": "^3.8",
-        "symfony/orm-pack": "^2.3",
         "symfony/process": "^6.2",
         "symfony/property-access": "^6.2",
         "symfony/runtime": "6.2.*",
         "symfony/semaphore": "^6.2",
         "symfony/serializer": "^6.2",
+        "symfony/twig-bundle": "^6.3",
         "symfony/yaml": "6.2.*"
     },
     "config": {
