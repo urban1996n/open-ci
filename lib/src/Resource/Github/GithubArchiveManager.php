@@ -2,7 +2,7 @@
 
 namespace App\Resource\Github;
 
-use App\Job\Data\Config;
+use App\Job\Config;
 use App\Resource\JobFileManager;
 use App\Resource\Locator;
 
