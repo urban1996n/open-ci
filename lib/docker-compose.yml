@@ -1,9 +1,9 @@
 version: "3"
 services:
-  php8.1:
+  php:
     container_name: exec
     build:
-      context: ./Docker/php8.1
+      context: ./Docker/php
       args:
         REDIS_PASSWORD: "$REDIS_PASSWORD"
         RABBITMQ_USER: "$RABBITMQ_DEFAULT_USER"
@@ -17,10 +17,9 @@ services:
       - proxy
     volumes:
       - .:/var/app
-      - /var/app/vendor
     restart: always
 
-  apache2:
+  apache:
     container_name: listener
     build:
       context: ./Docker/apache2
@@ -30,7 +29,7 @@ services:
     ports:
       - 443:443
     depends_on:
-      - php8.1
+      - php
     networks:
       - proxy
     restart: always
