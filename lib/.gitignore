@@ -1,10 +1,19 @@
-###> symfony/framework-bundle ###
+###> Symfony ENV files ###
 /.env.local
 /.env.local.php
 /.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
+###
+
+### Generated files
 /var/
+/public/bundles/
+###
+
+### Dependencies
 /vendor/
+/node_modules/
+###
+
+### Logs
 *.log
-###< symfony/framework-bundle ###
+###
