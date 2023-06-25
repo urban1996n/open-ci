@@ -17,7 +17,7 @@
                 path('build_log_download', {branch: build.branch, commitHash: build.commitHash, buildNumber: build.buildNumber})
             }}';
         </script>
-        <script type="text/javascript">{% include 'log/fetch_log.js.twig' %}</script>
+        {{ encore_entry_script_tags('build_log') }}
         <title>Log for {{ build.branch }}/{{ build.commitHash }}/{{ build.buildNumber }} </title>
     </head>
     <body>
