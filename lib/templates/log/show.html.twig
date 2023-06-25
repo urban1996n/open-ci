@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html lang="en_US">
+    <head>
+        <style>
+            body {
+                background-color: #2b2b2b;
+                color: #dcdcdc;
+                font-family: Consolas, monospace;
+                font-size: 14px;
+                line-height: 1.5;
+                padding: 20px;
+            }
+        </style>
+        <script type="text/javascript">
+            window['logFetchHref'] = '{{
+                path('build_log_download', {branch: build.branch, commitHash: build.commitHash, buildNumber: build.buildNumber})
+            }}';
+        </script>
+        <script>
+        </script>
+        <title>Log for {{ build.branch }}/{{ build.commitHash }}/{{ build.buildNumber }} </title>
+    </head>
+    <body>
+        {{ encore_entry_script_tags('build_log') }}
+        <main class="main__log_space"></main>
+    </body>
+</html>

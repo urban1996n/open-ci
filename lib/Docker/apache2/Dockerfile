@@ -24,8 +24,13 @@ RUN sed -i \
 # Create ssl key and certificate files, or copy them if they exist in ssl directory.
 RUN apk add openssl
 
+
 RUN if [ ! -e apache2/ssl/*.crt ]; then\
-      openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /usr/local/apache2/conf/server.key -out /usr/local/apache2/conf/server.crt -subj "/CN=127.0.0.1"
+      openssl req -x509 -nodes \
+      -days 365 -newkey rsa:2048 \
+      -keyout /usr/local/apache2/conf/server.key \
+      -out /usr/local/apache2/conf/server.crt \
+      -subj "/CN=$MAIN_SERVERNAME";\
 fi
 
 # Include ssl config in main apache2 configuration
@@ -40,7 +45,7 @@ RUN grep -rlE '^([^#])?(\s{0,})(ServerName|ServerAlias)' /usr/local/apache2/conf
     | xargs sed -i -E "s/(ServerName|ServerAlias) (.*)/\1 $MAIN_SERVERNAME/g"
 
 RUN mkdir  -p /usr/local/apache2/htdocs/public
+WORKDIR /usr/local/apache2/htdocs/public
 
 #[Run apache service]
 CMD ["httpd","-DFOREGROUND"]
-

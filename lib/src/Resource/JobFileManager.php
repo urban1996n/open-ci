@@ -3,7 +3,7 @@
 namespace App\Resource;
 
 use App\Job\Config;
-use Symfony\Component\Filesystem\Filesystem;
+use App\Filesystem\Filesystem;
 
 class JobFileManager
 {

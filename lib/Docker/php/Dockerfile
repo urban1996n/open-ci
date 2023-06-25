@@ -1,4 +1,4 @@
-FROM php:8.1.17-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 #[This will be the feed for supervisor's runners count]
 ARG RUNNERS_COUNT
@@ -6,16 +6,18 @@ ARG REDIS_PASSWORD
 ARG RABBITMQ_USER
 ARG RABBITMQ_PASSWORD
 
+ENV HAVE_LINUX_SOCK_DIAG_H=1
 ENV RUNNERS_COUNT="$RUNNERS_COUNT"
 ENV REDIS_PASSWORD="$REDIS_PASSWORD"
 ENV AMQP_USER="$RABBITMQ_USER"
 ENV AMQP_PASSWORD="$RABBITMQ_PASSWORD"
 
-#[Install redis extension]
 RUN apk update \
     && apk upgrade \
-    && apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS
+    && apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS \
+    && apk add --no-cache linux-headers
 
+#[Install redis extension]
 RUN pecl install redis
 
 #[Add and install required libraries and extensions]

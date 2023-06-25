@@ -1,9 +1,12 @@
 version: "3"
+volumes:
+# Create a shared volume for apache and node containes to share assets
+  _assets:
 services:
-  php8.1:
+  php:
     container_name: exec
     build:
-      context: ./Docker/php8.1
+      context: ./Docker/php
       args:
         REDIS_PASSWORD: "$REDIS_PASSWORD"
         RABBITMQ_USER: "$RABBITMQ_DEFAULT_USER"
@@ -17,10 +20,9 @@ services:
       - proxy
     volumes:
       - .:/var/app
-      - /var/app/vendor
     restart: always
 
-  apache2:
+  apache:
     container_name: listener
     build:
       context: ./Docker/apache2
@@ -30,10 +32,32 @@ services:
     ports:
       - 443:443
     depends_on:
-      - php8.1
+      - php
     networks:
       - proxy
+      - assets
     restart: always
+    ## Use readonly volume of the _assets volume
+    volumes:
+      - _assets:/usr/local/apache2/htdocs/build:ro
+
+  node:
+    image: node:14.15.4-alpine3.12
+    container_name: node
+    networks:
+      - assets
+    restart: always
+    working_dir: /var/app/
+    volumes:
+        - _assets:/var/app/public/build
+        - ./assets:/var/app/assets
+        - ./public:/var/app/public
+        - ./package.json:/var/app/package.json
+        - ./package-lock.json:/var/app/package-lock.json
+        - ./webpack.config.js:/var/app/webpack.config.js
+        - ./node_modules:/var/app/node_modules
+
+    entrypoint: ["sleep", "infinity"]
 
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
@@ -62,3 +86,4 @@ services:
 networks:
   exec_internal:
   proxy:
+  assets:

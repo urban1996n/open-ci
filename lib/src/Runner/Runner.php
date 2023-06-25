@@ -4,10 +4,9 @@ namespace App\Runner;
 
 use App\Job\Job;
 use App\Resource\FileManager;
-use App\Resource\GithubArchiveManager;
-use App\Resource\GithubRepoDownloader;
+use App\Resource\Github\GithubArchiveManager;
+use App\Resource\Github\GithubRepoDownloader;
 use App\Resource\JobFileManager;
-use App\Resource\Locator;
 use Psr\Log\LoggerInterface;
 
 class Runner
