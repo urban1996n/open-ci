@@ -2,12 +2,6 @@ version: "3"
 volumes:
 # Create a shared volume for apache and node containes to share assets
   _assets:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/public/build
-
 services:
   php:
     container_name: exec
@@ -45,7 +39,7 @@ services:
     restart: always
     ## Use readonly volume of the _assets volume
     volumes:
-      - _assets:/var/app/public/build:ro
+      - _assets:/usr/local/apache2/htdocs/build:ro
 
   node:
     image: node:14.15.4-alpine3.12
@@ -53,8 +47,17 @@ services:
     networks:
       - assets
     restart: always
+    working_dir: /var/app/
     volumes:
         - _assets:/var/app/public/build
+        - ./assets:/var/app/assets
+        - ./public:/var/app/public
+        - ./package.json:/var/app/package.json
+        - ./package-lock.json:/var/app/package-lock.json
+        - ./webpack.config.js:/var/app/webpack.config.js
+        - ./node_modules:/var/app/node_modules
+
+    entrypoint: ["sleep", "infinity"]
 
   rabbitmq:
     image: rabbitmq:3.8-management-alpine

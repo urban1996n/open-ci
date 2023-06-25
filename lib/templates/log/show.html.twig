@@ -17,10 +17,12 @@
                 path('build_log_download', {branch: build.branch, commitHash: build.commitHash, buildNumber: build.buildNumber})
             }}';
         </script>
-        {{ encore_entry_script_tags('build_log') }}
+        <script>
+        </script>
         <title>Log for {{ build.branch }}/{{ build.commitHash }}/{{ build.buildNumber }} </title>
     </head>
     <body>
+        {{ encore_entry_script_tags('build_log') }}
         <main class="main__log_space"></main>
     </body>
 </html>

@@ -45,6 +45,7 @@ RUN grep -rlE '^([^#])?(\s{0,})(ServerName|ServerAlias)' /usr/local/apache2/conf
     | xargs sed -i -E "s/(ServerName|ServerAlias) (.*)/\1 $MAIN_SERVERNAME/g"
 
 RUN mkdir  -p /usr/local/apache2/htdocs/public
+WORKDIR /usr/local/apache2/htdocs/public
 
 #[Run apache service]
 CMD ["httpd","-DFOREGROUND"]

@@ -6,6 +6,12 @@
   },
   "dependencies": {
     "@babel/core": "^7.22.5",
-    "@symfony/webpack-encore": "^4.3.0"
+    "@babel/preset-env": "^7.22.5",
+    "@symfony/webpack-encore": "^4.3.0",
+    "webpack": "^5.88.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.1.4",
+    "webpack-notifier": "^1.15.0"
   }
 }
