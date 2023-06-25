@@ -1,4 +1,13 @@
 version: "3"
+volumes:
+# Create a shared volume for apache and node containes to share assets
+  _assets:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/public/build
+
 services:
   php:
     container_name: exec
@@ -32,7 +41,20 @@ services:
       - php
     networks:
       - proxy
+      - assets
     restart: always
+    ## Use readonly volume of the _assets volume
+    volumes:
+      - _assets:/var/app/public/build:ro
+
+  node:
+    image: node:14.15.4-alpine3.12
+    container_name: node
+    networks:
+      - assets
+    restart: always
+    volumes:
+        - _assets:/var/app/public/build
 
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
@@ -61,3 +83,4 @@ services:
 networks:
   exec_internal:
   proxy:
+  assets:
