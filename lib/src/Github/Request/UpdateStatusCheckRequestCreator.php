@@ -3,7 +3,6 @@
 namespace App\Github\Request;
 
 use App\Common\Status;
-use App\Job\Config;
 
 class UpdateStatusCheckRequestCreator extends AbstractStatusRequestCreator
 {
@@ -19,16 +18,6 @@ class UpdateStatusCheckRequestCreator extends AbstractStatusRequestCreator
 
     protected function getRequestBody(?object $subject, array $context = []): array
     {
-        if (!$subject instanceof Config) {
-            throw RequestCreationException::invalidSubject(
-                Config::class, $subject === null ? 'null' : \get_class($subject)
-            );
-        }
-
-        return parent::getRequestBody($subject) +
-            [
-                'state'       => $context['status'] ?? Status::Failure->value,
-                'details_url' => $this->getDetailsUrlFor($subject),
-            ];
+        return parent::getRequestBody($subject) + ['state' => $context['status'] ?? Status::Failure->value];
     }
 }
