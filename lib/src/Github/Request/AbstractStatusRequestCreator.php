@@ -24,19 +24,18 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
 
     protected function getRequestBody(?object $subject, array $context = []): array
     {
+        $this->validateSubject($subject);
+
         return [
             'description' => $context['description'] ?? 'Building your commit',
             'context'     => 'continuous-integration/ci-cd',
+            'target_url'  => $this->getDetailsUrlFor($subject),
         ];
     }
 
     protected function getUri(?object $subject): string
     {
-        if (!$subject instanceof Config) {
-            throw RequestCreationException::invalidSubject(
-                Config::class, $subject === null ? 'null' : \get_class($subject)
-            );
-        }
+        $this->validateSubject($subject);
 
         return \strtr(
             'repos/{owner}/{repo}/statuses/{sha}',
@@ -48,10 +47,10 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
         );
     }
 
-    protected function getDetailsUrlFor(Config $job): string
+    private function getDetailsUrlFor(Config $job): string
     {
         return $this->router->generate(
-            'download_log',
+            'build_log_show',
             [
                 'branch'      => $job->getBranch(),
                 'commitHash'  => $job->getCommitHash(),
