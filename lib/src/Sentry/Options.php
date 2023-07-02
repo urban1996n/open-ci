@@ -5,7 +5,6 @@ namespace App\Sentry;
 use Sentry\Event;
 use Sentry\State\Scope;
 use Symfony\Component\HttpFoundation\RequestStack;
-
 use function Sentry\withScope;
 
 class Options
@@ -27,6 +26,10 @@ class Options
     {
         $setContext = function (Scope $scope) {
             $request       = $this->requestStack->getCurrentRequest();
+            if (!$request) {
+                return;
+            }
+
             $requestParams = $request->getMethod() === 'POST'
                 ? $request->request
                 : $request->query;
