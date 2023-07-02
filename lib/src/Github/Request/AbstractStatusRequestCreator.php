@@ -60,4 +60,13 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
             UrlGeneratorInterface::ABSOLUTE_URL
         );
     }
+
+    private function validateSubject(?object $subject): void
+    {
+        if (!$subject instanceof Config) {
+            throw RequestCreationException::invalidSubject(
+                Config::class, $subject === null ? 'null' : \get_class($subject)
+            );
+        }
+    }
 }
