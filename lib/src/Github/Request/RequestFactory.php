@@ -19,6 +19,6 @@ class RequestFactory
             }
         }
 
-        return null;
+        throw RequestCreationException::invalidRequestCreator('No request creator found for given type (' . $type->value . ').' );
     }
 }

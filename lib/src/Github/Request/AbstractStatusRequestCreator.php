@@ -33,7 +33,9 @@ abstract class AbstractStatusRequestCreator extends AbstractGithubRequestCreator
     protected function getUri(?object $subject): string
     {
         if (!$subject instanceof Config) {
-            throw new \RuntimeException();
+            throw RequestCreationException::invalidSubject(
+                Config::class, $subject === null ? 'null' : \get_class($subject)
+            );
         }
 
         return \strtr(

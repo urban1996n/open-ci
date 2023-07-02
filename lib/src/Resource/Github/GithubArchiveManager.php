@@ -24,7 +24,7 @@ class GithubArchiveManager
             $this->archive->extractTo($this->locator->locateExecDirFor($jobConfig));
             $this->archive->close();
         } else {
-            throw new \RuntimeException();
+            throw new \RuntimeException('Could not open archive file.');
         }
     }
 }
