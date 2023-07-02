@@ -19,7 +19,9 @@ class MarkCheckFailureRequestCreator extends AbstractStatusRequestCreator
     protected function getRequestBody(?object $subject, array $context = []): array
     {
         if (!$subject instanceof Config) {
-            throw new \RuntimeException();
+            throw RequestCreationException::invalidSubject(
+                Config::class, $subject === null ? 'null' : \get_class($subject)
+            );
         }
 
         return parent::getRequestBody($subject) + ['state' => 'failure', 'details_url' => $this->getDetailsUrlFor($subject)];
